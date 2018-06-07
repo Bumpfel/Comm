@@ -7,6 +7,8 @@ import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
+import { Subscription } from 'rxjs/Subscription';
+
 interface Forum {
   name: string;
   description: string;
@@ -21,11 +23,20 @@ interface ChatMsg {
   content: string;
   time: any;
   sender: string;
-  // senderId: number;
+  senderUid: string;
+  userColour: string;
 }
 
 interface Global {
   nextChatId: number;
+}
+
+interface User {
+  admin?: boolean;
+  uid: string;
+  displayName: string;
+  email: string;
+  chatNameColour: string;
 }
 
 @Component({
@@ -41,6 +52,7 @@ export class AppComponent {
   chatChannelCollection: AngularFirestoreCollection<ChatChannel>;
   chatChannels: Observable<ChatChannel[]>;
 
+  activeChatChannelName: string;
   chatMsgCollection: AngularFirestoreCollection<ChatMsg>;
   chatMsgs: Observable<ChatMsg[]>;
 
@@ -48,76 +60,115 @@ export class AppComponent {
 
   newMsg: string;
   senderName: string;
+  prevSenderId: string;
+
+  user: User;
+  // userRef;
+  user$: Observable<any>;
+  userSub: Subscription;
 
   constructor(private afs: AngularFirestore,
-              private afAuth: AngularFireAuth) {
+    private afAuth: AngularFireAuth) {
 
   }
 
   ngOnInit() {
-    this.forumsCollection = this.afs.collection('forum');
+    this.forumsCollection = this.afs.collection('forum/');
     this.forums = this.forumsCollection.valueChanges();
 
-    this.chatChannelCollection = this.afs.collection('chat');
+    this.chatChannelCollection = this.afs.collection('chat/');
     this.chatChannels = this.chatChannelCollection.valueChanges();
 
-    this.chatMsgCollection = this.afs.collection('chat/ks7vyEz0rVGXv8EVRRCY/msgs', ref => ref.orderBy('time'));
+    var activeChatChannelRef = this.afs.doc<ChatChannel>('chat/8gxTy0q6ZzMu5yXA2Fam/');
+    activeChatChannelRef.valueChanges().subscribe(channel => this.activeChatChannelName = channel.name);
+    this.chatMsgCollection = activeChatChannelRef.collection('msgs/', ref => ref.orderBy('time'));
     this.chatMsgs = this.chatMsgCollection.valueChanges();
 
     this.afs.doc<Global>('data/global/').valueChanges().subscribe(doc => this.nextChatId = doc.nextChatId);
 
-    // setTimeout(() => { scroll() }, 1000);
+    
+    this.user$ = this.afAuth.authState.switchMap(authUser => {
+      if(authUser)
+        return this.afs.doc<User>('users/' + authUser.uid).valueChanges();
+      else
+        return Observable.of(null);
+    });
+    this.userSub = this.user$.subscribe(user => this.user = user);
   }
-
+  
   googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    this.afAuth.auth.signInWithPopup(provider).then((credential) => {
+    this.afAuth.auth.signInWithPopup(provider).then(credential => {
       this.updateUser(credential.user);
     });
   }
-  // Logs out from google.
-  googleLogOut() {
+  
+  logout() {
+    // this.userSub.unsubscribe();
     this.afAuth.auth.signOut();
   }
-
-  updateUser(user: any) {
-    this.afs.doc('users/' + user.uid).set({ uid: user.uid, email: user.email, displayName: user.displayName });
-    
-    // updateUser(user) {
-    //   const userRef: AngularFirestoreDocument<any> = this.afs.doc('users/' + user.uid + '');
-    //   const data: User = {
-    //     uid: user.uid,
-    //     email: user.email,
-    //     displayName: user.displayName,
-    //   }
-    //   return userRef.set(data, { merge: true });
   
+  // anonymousLogin(name: string) {
+  //   this.updateUser(this.user);
+  //   this.afAuth.auth.signInAnonymously().then(credential => {
+  //   });
+  // }
+  
+  updateUser(userCred: User) {
+    // this.userRef.valueChanges().subscribe(user => this.user = user);
+    var userRef = this.afs.doc<User>('users/' + userCred.uid);
+    userRef.set({ uid: userCred.uid, email: userCred.email, displayName: userCred.displayName, chatNameColour: this.getRandomColour() }, { merge: true });
+  }
+
+  getRandomColour() {
+      var str = "#";
+      var possible = "bcd456";
+    
+      for (var i = 0; i < 3; i++)
+        str += possible.charAt(Math.floor(Math.random() * possible.length));
+    
+      console.log(str);
+      return str;
   }
 
   test() {
-    console.log(this.nextChatId);
+    const provider = new firebase.auth.GoogleAuthProvider();
+    this.afAuth.auth.signInWithPopup(provider).then(credential => {
+      console.log(credential.Ya.j);
+    });
+
+    this.afAuth.auth.signInAnonymously().then(credential => {
+      this.updateUser(credential.user);
+    });
   }
 
   addMsg() {
-    if (this.checkMsg()) {
+    if (this.checkMsgValidity()) {
       this.afs.doc('data/global').update({ 'nextChatId': this.nextChatId + 1 });
 
-      this.chatMsgCollection.doc('' + this.nextChatId).set({ 'id': this.nextChatId, 'content': this.newMsg, 'sender': this.senderName, 'time': this.getTimeStamp() })
+      var separator = this.user.displayName.indexOf(" ");
+      var senderName = this.user.displayName.substr(0, separator);
+
+      this.chatMsgCollection.doc('' + this.nextChatId).set({ 'id': this.nextChatId, 'content': this.newMsg, 'senderId': this.user.uid, 'sender': senderName, 'userColour': this.user.chatNameColour,'time': this.getTimeStamp() })
       this.newMsg = undefined;
 
       setTimeout(() => { document.getElementById('bottom').scrollIntoView(); }, 100);
     }
   }
-  
+
+  setPrevSenderId(id: string) {
+    this.prevSenderId = id;
+  }
+
   scroll() {
     document.getElementById('bottom').scrollIntoView();
   }
 
-  setName(name: string) {
-    this.senderName = name;
-  }
+  // setName(name: string) {
+  //   this.senderName = name;
+  // }
 
-  checkMsg() {
+  checkMsgValidity() {
     if (this.newMsg == undefined)
       return false;
     return this.newMsg.trim().length > 0;

@@ -1,6 +1,6 @@
 .chatContainer {
     height: 400px;
-    width: 1000px; 
+    width: 1000px;
     border: 1px solid grey;
     overflow: auto;
 }
@@ -9,8 +9,14 @@
     background-color: #f5f5f5;
 }
 
-.msg:hover .delete {
+.msg:hover .time, .msg:hover .delete {
     display: inline;
+}
+
+.time {
+    display: none;
+    float: right;
+    margin-right: 10px;
 }
 
 .delete {
@@ -20,7 +26,40 @@
 }
 
 .newMsg {
-    width:998px; 
-    margin:5px 0; 
-    font-size:16px;
+    width: 998px;
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.googleLogin {
+    /* width: 200px; */
+    padding: 5px;
+    /* background-color: white; */
+    background-color: #db4835;
+    margin-right: 1px;
+    border-radius: 3px;
+    display: inline-block;
+}
+.googleLogin img {
+    float: left;
+    margin:5px;
+    width: 25px;
+    /* border: 1px dashed blue; */
+    /* padding-right: 1px; */
+    /* border-right: 1px solid white; */
+}
+.googleLogin .link {
+    float: left;
+    position: relative;
+    /* top: 8px; */
+    /* border: 1px dotted grey; */
+    /* display: inline-block; */
+    padding: 0 5px;
+    /* font-weight: bold; */
+    font: sans-serif 16px bold;
+    color: white;
+}
+
+.googleLoginImg img {
+    width: 220px;
 }

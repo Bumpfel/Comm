@@ -8,6 +8,9 @@ import { AppComponent } from './app.component';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestore, AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { ChatLobbyComponent } from './chat/chat-lobby/chat-lobby.component';
+import { ChatChannelComponent } from './chat/chat-channel/chat-channel.component';
 
 // import { AngularFireDatabaseModule } from 'angularfire2/database';
 // import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -23,7 +26,9 @@ var firebaseConfig = {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ChatLobbyComponent,
+    ChatChannelComponent
   ],
   imports: [
     BrowserModule,
@@ -32,6 +37,7 @@ var firebaseConfig = {
     AngularFireModule,
     // AngularFirestore,
     AngularFirestoreModule,
+    AngularFireAuthModule,
     // AngularFireDatabaseModule,
   ],
   providers: [],
