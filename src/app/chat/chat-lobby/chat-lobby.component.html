@@ -13,7 +13,7 @@
   <div style="display:flex" *ngFor="let chatChannel of chatChannels | async">
     <a style="width:200px" [routerLink]="'/chat/' + chatChannel.id">{{ chatChannel.name }}</a>
     <!-- <a (click)="confirmDeletion = true; deleteId = chatChannel.id; deleteName = chatChannel.name" *ngIf="user && user.admin"> -->
-    <a (click)="this.popupService.newConfirmPopup('?', () => this.deleteChatChannel(id))" *ngIf="user && user.admin && chatChannel.id != 'ks7vyEz0rVGXv8EVRRCY' &&  chatChannel.id != '8gxTy0q6ZzMu5yXA2Fam'">
+    <a (click)="popup('This action cannot be undone! Are you sure you want to delete the channel ' + deleteName + '?', chatChannel.id)" *ngIf="user && user.admin && chatChannel.id != 'ks7vyEz0rVGXv8EVRRCY' &&  chatChannel.id != '8gxTy0q6ZzMu5yXA2Fam'">
       <i class="fa fa-trash-o"></i>
     </a>
   </div>
