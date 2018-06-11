@@ -1,45 +1,8 @@
-<h1>Chat</h1>
-<div *ngIf="!senderName && !user else showChat">
-  <a (click)="googleLogin()" class="googleLoginImg">
-    <img src="http://www.kthotelsgate.com/assets/theme_dark/images/sign-in-button.png">
-    <!-- <img src="https://seeklogo.com/images/G/google-plus-logo-2A4DC189D3-seeklogo.com.png"><div class="link">Sign in with google</div> -->
-  </a>
-  <br>
-  <br> ...or sign in anonymously
-  <form>
-    <input type="text" autofocus style="width:300px; font-size:14px" #senderName placeholder="Choose a chat name">
-    <input type="submit" value="Use" (click)="anonymousLogin(senderName)">
-  </form>
+<app-topnavbar></app-topnavbar>
+<div class="main">
+    <router-outlet></router-outlet>
+    <app-popup></app-popup>
 </div>
-
-<ng-template #showChat>
-  Chatting in {{ activeChatChannelName }}
-  <br>
-  <div class="googleLogin">
-    <a (click)="logout()" class="link">Sign out</a>
-  </div>
-  <br> Signed in as {{ user.displayName }}
-  <br>
-  <!-- <label for="chk">Show timetamp</label>
-  <input name="chk" type="checkbox" [(ngModel)]="showTimestamp"> -->
-  <div class="chatContainer">
-    <div class="msg" *ngFor="let msg of chatMsgs | async">
-      <strong [ngStyle]="{ 'color': msg.userColour }">{{ msg.sender }}:</strong> {{ msg.content }}
-        <a class="delete" (click)="deleteItem(msg.id)">
-          <i class="fa fa-trash-o"></i>
-        </a>
-      <div class="time">{{ printTime(msg.time) }}</div>
-    </div>
-    <div id="bottom"></div>
-  </div>
-  <form>
-    <input type="text" class="newMsg" autofocus required [(ngModel)]="newMsg" name="newMsg" autocomplete="off">
-    <br>
-    <input type="submit" (click)="addMsg()" value="Send">
-    <input type="submit" (click)="newMsg = undefined" value="Clear">
-    <br>
-    <br>
-    <input type="button" (click)="getRandomColour()" value="Test me">
-  </form>
-  {{ scroll() }}
-</ng-template>
+<div class="messages">
+    <app-messages></app-messages>
+</div>

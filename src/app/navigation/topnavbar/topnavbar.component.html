@@ -1,0 +1,40 @@
+<ul>
+  <li class="left menuitem">
+    <i class="fa fa-bars"></i>
+  </li>
+  <li class="left menuitem">
+    Item #1
+  </li>
+  <li class="left menuitem">
+    Item #2
+  </li>
+  <li class="left menuitem">
+    Item #3
+  </li>
+  <a routerLink="/chat">
+    <li class="left menuitem">
+      Chat
+    </li>
+  </a>
+
+  <a (click)="authService.googleLogin()" name="login">
+    <li class="right iconitem" *ngIf="!user else showLoggedInMenu">
+      <i class="material-icons">person_outline</i>
+      <label for="login">Log in</label>
+    </li>
+  </a>
+  <ng-template #showLoggedInMenu>
+    <a (click)="authService.logout()" name="logout">
+      <li class="right iconitem">
+        <i class="material-icons">person</i>
+        <label for="logout">{{ user.displayName }}</label>
+      </li>
+    </a>
+  </ng-template>
+
+  <li class="right search">
+    <input type="text" placeholder="Search">
+  </li>
+  <!-- class="googleLoginImg">
+      <img src="http://www.kthotelsgate.com/assets/theme_dark/images/sign-in-button.png"> -->
+</ul>

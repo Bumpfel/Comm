@@ -1,0 +1,6 @@
+<div class="popup" *ngIf="popupService.confirmPopup">
+    {{ popupService.confirmPopup }}
+    <br>
+    <button (click)="popupService.executeAction()">Yes</button>
+    <button (click)="popupService.closePopups()">No</button>
+</div>

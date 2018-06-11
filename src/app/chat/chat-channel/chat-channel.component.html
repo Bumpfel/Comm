@@ -1,0 +1,46 @@
+
+<!-- <h3><a routerLink="/chat">Chat lobby</a> &raquo; {{ activeChatChannelName }} chat channel</h3> -->
+<input type="button" (click)="scroll()" value="Test me" *ngIf="user && user.admin">
+
+<h4>
+  <a routerLink="/chat">Go back to lobby</a>
+</h4>
+<div *ngIf="user else showLoginMsg">
+  <div *ngIf="activeChatChannel else show404Msg">
+  <!-- <br>
+    <br> ...or sign in anonymously
+    <form>
+      <input type="text" autofocus style="width:300px; font-size:14px" #senderName placeholder="Choose a chat name">
+      <input type="submit" value="Use" (click)="anonymousLogin(senderName)">
+    </form> -->
+  
+    <h3>Chatting in {{ activeChatChannel.name }}</h3>
+  <!-- <label for="chk">Show timetamp</label>
+  <input name="chk" type="checkbox" [(ngModel)]="showTimestamp"> -->
+  <div class="chatContainer" id="chatContainer">
+    <div class="msg" *ngFor="let msg of chatMsgs">
+      <strong [ngStyle]="{ 'color': msg.userColour }">{{ msg.sender }}:</strong> {{ msg.content }}
+        <a class="delete" (click)="deleteItem(msg.id)">
+          <i class="fa fa-trash-o"></i>
+        </a>
+      <div class="time">{{ printTime(msg.time) }}</div>
+    </div>
+    <div id="bottom" (load)="scroll()">&nbsp;</div>
+  </div>
+  <form>
+    <!-- {{ scroll() }} -->
+    <input type="text" class="newMsg" autofocus required [(ngModel)]="newMsg" name="newMsg" autocomplete="off">
+    <br>
+    <input type="submit" (click)="addMsg()" value="Send">
+    <input type="submit" (click)="newMsg = undefined" value="Clear">
+  </form>
+  </div>
+</div>
+
+<ng-template #showLoginMsg>
+  You have to sign in to be able to chat
+</ng-template>
+
+<ng-template #show404Msg>
+  Four, oh four; Page not found
+</ng-template>

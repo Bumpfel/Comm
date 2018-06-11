@@ -1,0 +1,36 @@
+<h2>Available chat channels</h2>
+<div *ngIf="user && user.admin">
+  <input type="button" value="Create new chat channel" (click)="createChannel = true" *ngIf="!createChannel">
+  <div *ngIf="createChannel" class="create">
+    <h4>Create new chat channel</h4>
+    <input type="text" placeholder="Name" autofocus [(ngModel)]="newChatChannelName">
+    <input type="submit" value="Create" (click)="newChatChannel(); createChannel = false">
+    <input type="button" value="Cancel" (click)="createChannel = false">
+  </div>
+</div>
+
+<div class="channelContainer">
+  <div style="display:flex" *ngFor="let chatChannel of chatChannels | async">
+    <a style="width:200px" [routerLink]="'/chat/' + chatChannel.id">{{ chatChannel.name }}</a>
+    <!-- <a (click)="confirmDeletion = true; deleteId = chatChannel.id; deleteName = chatChannel.name" *ngIf="user && user.admin"> -->
+    <a (click)="this.popupService.newConfirmPopup('?', () => this.deleteChatChannel(id))" *ngIf="user && user.admin && chatChannel.id != 'ks7vyEz0rVGXv8EVRRCY' &&  chatChannel.id != '8gxTy0q6ZzMu5yXA2Fam'">
+      <i class="fa fa-trash-o"></i>
+    </a>
+  </div>
+
+<!-- 
+  <div class="popup" *ngIf="confirmDeletion">
+    This action cannot be undone!<br>
+    Are you sure you want to delete the channel <strong>'{{ deleteName }}'</strong>?
+    <br>
+    <button (click)="deleteChatChannel(deleteId); deleteId = undefined; confirmDeletion = false; deleteName = undefined">Yes</button>
+    <button (click)="confirmDeletion = false; deleteId = undefined; deleteName = undefined">No</button>
+  </div>
+</div> -->
+
+<!-- <br><br><br><br>
+<button (click)="this.messageService.addNotification('test message 1')">Test me 1</button>
+<button (click)="this.messageService.addNotification('test message 2')">Test me 2</button>
+<br><br>
+<button (click)="this.messageService.addErrMessage('error message')">Test error 1</button>
+<button (click)="this.messageService.addErrMessage('error message 2')">Test error 2</button> -->

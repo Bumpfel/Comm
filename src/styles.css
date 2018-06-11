@@ -1,3 +1,65 @@
+/* General stuff */
+body {
+    margin: 5px 0 0 0;
+    
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 13px;
+}
+
 a {
+    text-decoration: none;
+    color: black;
     cursor: pointer;
 }
+
+.create, .edit {
+    border: 1px solid black;
+    width: 600px;
+    padding: 20px;
+}
+
+
+
+/* Forms */
+input, select {
+    height: 25px;
+}
+
+input[type=text], input[type=number] {
+    width: 220px;
+    padding: 0;
+    margin: 0;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: 1px solid grey;   
+}
+
+input[type=checkbox] {
+    width: 20px;
+}
+
+input[type=checkbox]:focus {
+    outline: 0;
+}
+
+textarea {
+    width: 218px;
+    height: 200px;
+    resize: none;
+}
+
+select {
+    width: 224px;
+    height: 29px;
+}
+
+
+
+
+
+

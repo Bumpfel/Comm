@@ -1,0 +1,28 @@
+.message {
+    width: 200px;
+    padding: 5px 10px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    color: grey;
+    word-wrap: break-word;
+}
+
+.add, .update {
+    border: 1px solid darkgreen;
+    background-color: #9d9;
+    color: darkgreen;
+}
+
+.delete {
+    border: 1px solid #770;
+    background-color: #ee9;
+    color: #770;
+}
+
+.error {
+    border: 1px solid darkred;
+    background-color: #f88;
+    color: darkred;
+}
