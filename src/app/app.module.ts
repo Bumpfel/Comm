@@ -25,6 +25,7 @@ import { MessagesComponent } from './navigation/messages/messages.component';
 import { MessageService } from './services/message.service';
 import { PopupComponent } from './navigation/popup/popup.component';
 import { PopupService } from './services/popup.service';
+import { ChatService } from './services/chat.service';
 
 // import { AngularFireDatabaseModule } from 'angularfire2/database';
 // import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -55,6 +56,7 @@ import { PopupService } from './services/popup.service';
     AuthService,
     MessageService,
     PopupService,
+    ChatService,
   ],
   bootstrap: [AppComponent]
 })

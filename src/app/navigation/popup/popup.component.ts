@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PopupService } from '../../services/popup.service';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-popup',
@@ -8,7 +9,8 @@ import { PopupService } from '../../services/popup.service';
 })
 export class PopupComponent implements OnInit {
 
-  constructor(public popupService: PopupService) { }
+  constructor(public popupService: PopupService,
+              private chatService: ChatService) { }
 
   ngOnInit() {
   }

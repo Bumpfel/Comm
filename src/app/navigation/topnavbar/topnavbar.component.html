@@ -1,4 +1,9 @@
 <ul>
+  <a routerLink="">
+    <li class="left menuitem">
+      Home
+    </li>
+  </a>
   <li class="left menuitem">
     <i class="fa fa-bars"></i>
   </li>
@@ -17,20 +22,18 @@
     </li>
   </a>
 
-  <a (click)="authService.googleLogin()" name="login">
-    <li class="right iconitem" *ngIf="!user else showLoggedInMenu">
+  <a (click)="authService.googleLogin()" name="login" *ngIf="!user">
+    <li class="right iconitem">
       <i class="material-icons">person_outline</i>
       <label for="login">Log in</label>
     </li>
   </a>
-  <ng-template #showLoggedInMenu>
-    <a (click)="authService.logout()" name="logout">
-      <li class="right iconitem">
-        <i class="material-icons">person</i>
-        <label for="logout">{{ user.displayName }}</label>
-      </li>
-    </a>
-  </ng-template>
+  <a (click)="authService.logout()" name="logout" *ngIf="user">
+    <li class="right iconitem">
+      <i class="material-icons">person</i>
+      <label for="logout">{{ user.displayName }}</label>
+    </li>
+  </a>
 
   <li class="right search">
     <input type="text" placeholder="Search">

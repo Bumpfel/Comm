@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { Observable } from '@firebase/util';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class GlobalService {
 
   constructor(private afs: AngularFirestore) { }
 
-  getRandomColour() : string {
+  getRandomColour(colourRange: string): string {
     var str = "#";
-    var possible = "bcd456";
+    var possible = colourRange;
 
     for (var i = 0; i < 3; i++)
       str += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -17,11 +17,11 @@ export class GlobalService {
     return str;
   }
 
-  getData() {
+  getData(): Observable<Global> {
     return this.afs.doc<Global>('data/global').valueChanges();
   }
 
-  getTimeStamp() : string {
+  getTimeStamp(): string {
     var date = new Date();
     var YY = date.getFullYear();
 

@@ -7,18 +7,14 @@ export class MessageService {
   iconClass: Map<string, string> = new Map([
     ["add", "fa fa-plus"],
     ["delete", "fa fa-trash-o"],
-    ["update", "fa fa-edit"]
+    ["update", "fa fa-pencil"],
+    ["error", "fa fa-ban"],
   ]);
   
   
-  timeout: number = 4000;
+  timeout: number = 7000;
 
   constructor() {
-    // this.messages.push({ type: "add", text: "testing", icon: this.iconClass.get("add") })
-    // this.messages.push({ type: "uspdate", text: "testing", icon: this.iconClass.get("update") })
-    // this.messages.push({ type: "delete", text: "testing", icon: this.iconClass.get("delete") })
-    // this.messages.push({ type: "delete", text: "testing testingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtesting", icon: this.iconClass.get("delete") })
-    // this.messages.push({ type: "error", text: "testing", icon: this.iconClass.get("error") })
   }
 
 

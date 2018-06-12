@@ -91,4 +91,6 @@ export class ChatChannelComponent implements OnInit {
   printTime(time: string): string {
     return time.slice(11, 16);
   }
+
+  
 }

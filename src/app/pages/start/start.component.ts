@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-start',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StartComponent implements OnInit {
 
-  constructor() { }
+  user: User;
+
+  constructor(private authService: AuthService,
+              private messageService: MessageService) { }
 
   ngOnInit() {
+    this.authService.user$.subscribe(user => this.user = user);
   }
 
 }

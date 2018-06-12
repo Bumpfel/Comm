@@ -9,11 +9,6 @@ import 'rxjs/add/operator/map';
 
 import { Subscription } from 'rxjs/Subscription';
 
-interface Forum {
-  name: string;
-  description: string;
-}
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,17 +16,9 @@ interface Forum {
 })
 export class AppComponent {
 
-  forumsCollection: AngularFirestoreCollection<Forum>;
-  forums: Observable<Forum[]>;
-
-
-  constructor(private afs: AngularFirestore) {
-
+  constructor() {
   }
 
   ngOnInit() {
-    this.forumsCollection = this.afs.collection('forum/');
-    this.forums = this.forumsCollection.valueChanges();
-
   }
 }

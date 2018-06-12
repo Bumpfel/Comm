@@ -1,28 +1,51 @@
+@keyframes fade-in-out {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes slide-from-bottom {
+    /* from { bottom: -16px; }
+    to { bottom: 0px; } */
+    from { height: 0; }
+    to { height: 16px; }
+}
+
 .message {
     width: 200px;
     padding: 5px 10px;
     border: 1px solid grey;
+    border-bottom: none;
     border-radius: 5px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    background-color: white;
     color: grey;
     word-wrap: break-word;
+    animation: fade-in-out 7s forwards;
+    /* animation: slide-from-bottom 2s; */
+    /* display: flex;
+    flex-direction: column-reverse; */
 }
 
 .add, .update {
     border: 1px solid darkgreen;
+    border-bottom: none;
     background-color: #9d9;
     color: darkgreen;
 }
 
 .delete {
     border: 1px solid #770;
+    border-bottom: none;
     background-color: #ee9;
     color: #770;
 }
 
 .error {
     border: 1px solid darkred;
+    border-bottom: none;
     background-color: #f88;
     color: darkred;
 }

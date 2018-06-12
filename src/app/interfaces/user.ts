@@ -4,4 +4,5 @@ interface User {
   displayName: string;
   email: string;
   chatNameColour?: string;
+  photoUrl?: any;
 }

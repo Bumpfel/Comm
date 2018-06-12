@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { GlobalService } from '../../services/global.service';
 import { MessageService } from '../../services/message.service';
 import { PopupService } from '../../services/popup.service';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat-lobby',
@@ -25,50 +26,31 @@ export class ChatLobbyComponent implements OnInit {
 
   constructor(private afs: AngularFirestore,
               private authService: AuthService,
-              private globalService: GlobalService,
+              private chatService: ChatService,
+              // private globalService: GlobalService,
               private messageService: MessageService,
               private popupService: PopupService) { }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => this.user = user);
     // this.chatChannelCollection = this.afs.collection<ChatChannel>('chat/');
-    this.chatChannels = this.afs.collection<ChatChannel>('chat/').valueChanges();
+    this.chatChannels = this.afs.collection<ChatChannel>('chat/', ref => ref.where('id', '>=', '0')).valueChanges();
   }
 
-  newChatChannel(): void {
-    let newName =  this.newChatChannelName.trim(); 
-    this.afs.collection<ChatChannel>('chat').add({ 'name': newName, 'nextChatId': 0 })
-      .then((docRef) => {
-        docRef.update({ 'id': docRef.id });
-        this.messageService.addMessage("add", "Channel created");
-      })
-      .catch((error) => {
-        console.log("Error creating chat channel: " + error);
-        this.messageService.addMessage("error", "Error creating channel: " + error);
-      });
-
+  newChatChannel() {
+    this.chatService.newChatChannel(this.newChatChannelName);
     this.newChatChannelName = undefined;
   }
 
-  deleteChatChannel(id: number): void {
-    this.afs.doc('chat/' + id).delete()
-      .then(() => {
-        this.messageService.addMessage("delete", "Channel deleted");
-      })
-      .catch((error) => {
-        // this.messageService.addErrMessage("Error deleting channel: " + error);
-      });
+  confirmPopup(text: string, text2: string, id: number) {
+    this.popupService.newConfirmPopup(text, text2, () => this.chatService.deleteChatChannel(id));
   }
 
-  checkChatChannelName(): boolean {
-    return this.newChatChannelName.trim().length > 0;
+  createPopup(title: string) {
+    this.popupService.newCreateChannelPopup(title); //, () => this.chatService.newChatChannel("hej"));
+  }
+  fieldFocus() {
+    // this.el.nativeElement.focus();
   }
 
-  popup(text: string, id: number) {
-    this.popupService.newConfirmPopup(text, () => this.deleteChatChannel(id));
-  }
-
-  // confirmPopup(msg: string, action: Function) {
-  //   action;
-  // }
 }

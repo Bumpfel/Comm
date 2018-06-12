@@ -1,8 +1,9 @@
 interface ChatChannel {
-  id?: any; //number
+  id: string;
   name: string;
   nextChatId: number;
   description?: string;
+  msgs?: ChatMsg[];
 }
 
 interface ChatMsg {
