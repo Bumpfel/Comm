@@ -23,17 +23,23 @@
   </a>
 
   <a (click)="authService.googleLogin()" name="login" *ngIf="!user">
-    <li class="right iconitem">
-      <i class="material-icons">person_outline</i>
-      <label for="login">Log in</label>
+    <li class="right menuitem">
+      <!-- <i class="fa fa-user-circle"></i> -->
+      <!-- <label for="login">Log in</label> -->
+      Log in
     </li>
   </a>
   <a (click)="authService.logout()" name="logout" *ngIf="user">
-    <li class="right iconitem">
-      <i class="material-icons">person</i>
-      <label for="logout">{{ user.displayName }}</label>
+    <li class="right menuitem">
+      Log out
     </li>
   </a>
+  <li class="right iconitem" *ngIf="user">
+    <i class="fa fa-user-plus" title="admin" *ngIf="user.admin"></i>
+    <i class="fa fa-user" title="registered user" *ngIf="!user.admin && !user.guest"></i>
+    <i class="fa fa-user-o" title="guest" *ngIf="user.guest"></i>
+    <label for="logout">{{ user.displayName }}</label>
+  </li>
 
   <li class="right search">
     <input type="text" placeholder="Search">

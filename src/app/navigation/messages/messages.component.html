@@ -1,5 +1,5 @@
 <div *ngIf="messageService.messages.length">
   <div *ngFor="let message of messageService.messages" class="message {{ message.type }}">
-      <i class="{{ message.icon }}"></i> {{ message.text }}
+    <i class="{{ message.icon }}"></i> {{ message.text }}
   </div>
 </div>

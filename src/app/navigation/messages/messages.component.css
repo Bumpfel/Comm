@@ -6,27 +6,38 @@
 }
 
 @keyframes slide-from-bottom {
-    /* from { bottom: -16px; }
-    to { bottom: 0px; } */
-    from { height: 0; }
-    to { height: 16px; }
+    0% { height: 0; }
+    /* 5% { padding-top: 5px; } */
+    20% { height: auto; }
+    80% { height: auto; }
+    /* 95% { padding-top: 5px; } */
+    100% { height: 0; }
+}
+
+@keyframes slide-from-bottom-pos {
+    0% { bottom: -26px }
+    20% { bottom: 0 }
+    80% { bottom: 0 }
+    100% { bottom: -26px }
 }
 
 .message {
+    position: relative;
     width: 200px;
+    /* padding: 0 10px; */
     padding: 5px 10px;
     border: 1px solid grey;
-    border-bottom: none;
     border-radius: 5px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    border-bottom: none;
     background-color: white;
     color: grey;
     word-wrap: break-word;
     animation: fade-in-out 7s forwards;
-    /* animation: slide-from-bottom 2s; */
-    /* display: flex;
-    flex-direction: column-reverse; */
+    /* animation: slide-from-bottom 7s forwards; */
+    /* animation: slide-from-bottom-pos 7s forwards; */
+    overflow: hidden;
 }
 
 .add, .update {

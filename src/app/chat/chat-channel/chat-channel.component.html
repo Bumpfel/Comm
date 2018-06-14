@@ -1,32 +1,34 @@
-<h4>
-  <a routerLink="/chat">&laquo; Go back to lobby</a>
-</h4>
+<h4><a routerLink="/chat">&laquo; Go back to lobby</a></h4>
 <div *ngIf="user else showLoginMsg">
-  <div *ngIf="activeChatChannel else show404Msg">
-    <h3>Chatting in {{ activeChatChannel.name }}</h3>
+  <div *ngIf="activeChannel else show404Msg">
+    <h3>Chatting in {{ activeChannel.name }}</h3>
     <!-- <label for="chk">Show timestamp</label>
         <input name="chk" type="checkbox" [(ngModel)]="showTimestamp"> -->
-    <button (click)="scroll()" *ngIf="user && user.admin" title="This is a temporary button, don't worry">Scroll down</button>
+    <button (click)="messageService.addMessage('add', 'Test message')" *ngIf="user && user.admin">Test me</button>
+    <button (click)="scroll()" title="This is a temporary button, don't worry">Scroll down</button>
+    <!-- Chat box -->
     <div class="chatContainer" id="chatContainer">
       <div class="msg" *ngFor="let msg of chatMsgs">
         <strong [ngStyle]="{ 'color': msg.userColour }">{{ msg.sender }}:</strong> {{ msg.content }}
-        <a class="delete" (click)="deleteItem(msg.id)" *ngIf="user && user.admin">
+        <a class="delete" (click)="chatService.deleteMsg(activeChannel.id, msg.id)" *ngIf="user && user.admin">
           <i class="fa fa-trash-o"></i>
         </a>
-        <div class="time">{{ printTime(msg.time) }}</div>
+        <div class="time">{{ chatService.printTime(msg.time) }}</div>
       </div>
       <div id="bottom">&nbsp;</div>
     </div>
     <!-- {{ scroll() }} -->
-    <form>
+    <!-- Send message -->
+    <form (ngSubmit)="chatService.addMsg(newMsg, activeChannel); newMsg = undefined">
       <input type="text" class="newMsg" autofocus required [(ngModel)]="newMsg" name="newMsg" autocomplete="off">
       <br>
-      <input type="submit" (click)="addMsg()" value="Send">
-      <input type="submit" (click)="newMsg = undefined" value="Clear">
+      <button type="submit">Send</button>
+      <button type="reset" (click)="newMsg = undefined">Clear</button>
     </form>
   </div>
 </div>
 
+<!-- Login prompt -->
 <ng-template #showLoginMsg>
   You have to sign in to be able to chat
   <br>
@@ -38,12 +40,15 @@
 
   <div class="box" *ngIf="anonymousLogin">
     <h4>Sign in anonymously</h4>
-    <input type="text" placeholder="Enter desired username" [(ngModel)]="username">
-    <button (click)="authService.anonymousLogin(username); username = undefined;">Log in</button>
-    <button (click)="anonymousLogin = false; username = undefined;">Cancel</button>
+    <form (ngSubmit)="authService.anonymousLogin(username); username = undefined">
+      <input type="text" placeholder="Enter desired username" autofocus autocomplete="off" [(ngModel)]="username" name="un">
+      <button type="submit">Log in</button>
+      <button type="reset" (click)="anonymousLogin = false; username = undefined">Cancel</button>
+    </form>
   </div>
 </ng-template>
 
+<!-- 404 -->
 <ng-template #show404Msg>
   Four, oh four; page not found
 </ng-template>

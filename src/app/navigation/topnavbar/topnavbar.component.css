@@ -5,7 +5,7 @@ ul {
 
     list-style-type: none;
     
-    background-color: #777;
+    background-color: #99c;
     font-size: 14px;
     /* display: block; */
 
@@ -30,17 +30,18 @@ li.menuitem {
     padding: 10px 20px;
     color:white;
 }
-li.menuitem:hover, li.iconitem:hover {
+li.menuitem:hover {
     background-color: #aaa;
     cursor: pointer;
     /* font-size: 120%; */
 }
 
 li.iconitem {
-    padding: 5.5px 20px;
+    padding: 10px 20px;
+    font-size: 13px;
 }
 li.iconitem i {
-    font-size: 24px;
+    font-size: 18px;
 }
 
 

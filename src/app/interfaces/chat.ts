@@ -1,6 +1,7 @@
 interface ChatChannel {
   id: string;
   name: string;
+  name_key: string;
   nextChatId: number;
   description?: string;
   msgs?: ChatMsg[];
@@ -11,6 +12,6 @@ interface ChatMsg {
   content: string;
   time: any;
   sender: string;
-  senderUid: string;
+  senderId: string;
   userColour: string;
 }  

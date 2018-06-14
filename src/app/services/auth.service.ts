@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
@@ -31,19 +31,17 @@ export class AuthService {
   googleLogin(): void {
     const provider = new firebase.auth.GoogleAuthProvider();
     this.afAuth.auth.signInWithPopup(provider).then(credentials => {
-      console.log("photo url " + credentials.photoUrl);
-      this.updateUser(credentials.user, this.globalService.getRandomColour("56789ab"));
+      let userRef = this.afs.doc<User>('users/' + credentials.user.uid);
+      userRef.set({ 'uid': credentials.user.uid, 'email': credentials.user.email, 'displayName': credentials.user.displayName, 'chatName': this.getChatName(credentials.user.displayName), 'chatNameColour': this.globalService.getRandomColour("6789a"), guest: false }, { merge: true });
     });
   }
 
-  anonymousLogin(name: string): void{
+  anonymousLogin(name: string): void {
     if (name && name.trim().length > 0) {
-      let username = name.trim();
+      let userName = name.trim() + ' (guest)';
       this.afAuth.auth.signInAnonymously().then(credentials => {
-        this.updateUser({ 'uid': credentials.uid, 'email': '', 'displayName': username + '(guest)' }, "a");
-
-        // var userRef = this.afs.doc<User>('users/' + credentials.uid);
-        // userRef.set({ uid: credentials.uid, email: "", displayName: name + "(guest)", chatNameColour: "black" }, { merge: true });
+        let userRef = this.afs.doc<User>('users/' + credentials.uid);
+        userRef.set({ 'uid': credentials.uid, 'email': '', 'displayName': userName, 'chatName': userName, 'chatNameColour': '#aaa', guest: true }, { merge: true });
       });
     }
     else
@@ -51,17 +49,20 @@ export class AuthService {
   }
 
   logout(): void {
-    this.afAuth.auth.signOut().then(() => {
-      this.messageService.addMessage("", "You are now logged out");
-      if (!this.user.email || this.user.email.length == 0) {
-        this.afs.doc('users/' + this.user.uid).delete();
-      }
-    });
+    this.afAuth.auth.signOut()
+      .then(() => {
+        this.messageService.addMessage("", "You are now logged out");
+        if (!this.user.email || this.user.email.length == 0) {
+          this.afs.doc('users/' + this.user.uid).delete();
+        }
+      });
   }
 
-
-  updateUser(userCred: User, userColour: string): void {
-    let userRef = this.afs.doc<User>('users/' + userCred.uid);
-    userRef.set({ uid: userCred.uid, email: userCred.email, displayName: userCred.displayName, chatNameColour: userColour }, { merge: true });
+  getChatName(displayName: string): string {
+    let separator = displayName.indexOf(" ");
+    let name = displayName;
+    if (separator > 0)
+      name = displayName.substr(0, separator);
+    return name;
   }
 }

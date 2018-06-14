@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ModuleWithProviders } from "@angular/core";
+// import { ModuleWithProviders } from "@angular/core";
 
 import { ChatLobbyComponent } from './chat/chat-lobby/chat-lobby.component';
 import { ChatChannelComponent } from './chat/chat-channel/chat-channel.component';
