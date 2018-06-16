@@ -1,0 +1,109 @@
+<div *ngIf="user && !user.guest else showLogin" class="container">
+  <button (click)="closePopups(); newCategory = true" [disabled]="newCategory">New task category</button>
+  <div class="popupContainer">
+    <!-- New Category -->
+    <div class="popup" *ngIf="newCategory">
+      <h4>New task category</h4>
+      <form (ngSubmit)="taskService.newCategory(name.value); closePopups()">
+        <input type="text" placeholder="Name" autocomplete="off" #name name="n">
+        <br>
+        <button type="submit">Submit</button>
+        <button type="reset" (click)="closePopups()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <button (click)="closePopups(); newTask = true" [disabled]="newTask">New task</button>
+  <div class="popupContainer">
+    <!-- New Task -->
+    <div class="popup" *ngIf="newTask">
+      <h4>New task</h4>
+      <form>
+        <input type="text" placeholder="Name" autofocus autocomplete="off" #name name="n">
+        <br>
+
+        <textarea placeholder="Description" autocomplete="off" #description name="n"></textarea>
+        <br>
+
+        <!-- <label for="po">Points</label>
+        <br> -->
+        <select #points name="po">
+          <option selected>Points: 1</option>
+          <option>Points: 2</option>
+          <option>Points: 3</option>
+          <option>Points: 5</option>
+          <option>Points: 8</option>
+          <option>Points: 13</option>
+          <option>Points: 21</option>
+        </select>
+        <br>
+
+        <!-- <label for="pr">Priority</label>
+        <br> -->
+        <select #priority name="pr">
+          <option selected>Priority:Low</option>
+          <option>Priority: Medium</option>
+          <option>Priority: High</option>
+          <option>Priority: Critical</option>
+        </select>
+        <br>
+
+        <button type="submit">Submit</button>
+        <button type="reset" (click)="closePopups()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="category" *ngFor="let category of taskCategories">
+    <div class="categoryName">
+      <h3>{{ category.name }}</h3>
+    </div>
+    <!-- <div class="task" *ngFor="let task of tasks">
+      {{ task.name }}
+    </div> -->
+    <!-- Tasks Not started -->
+    <div class="task">
+      <div class="taskName">
+        Test task
+      </div>
+      <div class="taskData">
+        5
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks In Progress -->
+  <div class="statusBlock">
+    <div class="statusName">
+      <h4>In Progress</h4>
+    </div>
+    <div>
+      
+    </div>
+  </div>
+
+  <!-- Completed Tasks -->
+  <div class="statusBlock">
+    <div class="statusName">
+      <h4>Completed</h4>
+    </div>
+    <div>
+      <div class="task">
+        <div class="taskName">
+          Test task
+        </div>
+        <div class="taskData">
+          3
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<ng-template #showLogin>
+  <!-- <app-404></app-404> -->
+  You have to be logged in as a registered user to view this page
+</ng-template>

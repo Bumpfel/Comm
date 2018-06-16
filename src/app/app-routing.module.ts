@@ -1,16 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-// import { ModuleWithProviders } from "@angular/core";
 
-import { ChatLobbyComponent } from './chat/chat-lobby/chat-lobby.component';
-import { ChatChannelComponent } from './chat/chat-channel/chat-channel.component';
+import { ChatLobbyComponent } from './pages/chat/chat-lobby/chat-lobby.component';
+import { ChatChannelComponent } from './pages/chat/chat-channel/chat-channel.component';
 import { StartComponent } from './pages/start/start.component';
+import { TasksComponent } from './pages/tasks/tasks.component';
 
-// pages
-
-//Routes Array
 const routes : Routes = [
-    { // Start page 
+    {
       path:"",
       redirectTo: "home",
       pathMatch: "full" 
@@ -26,6 +23,10 @@ const routes : Routes = [
     {
       path:"chat/:id",
       component:ChatChannelComponent
+    },
+    {
+      path:"tasks",
+      component:TasksComponent
     },
 ];
 @NgModule({

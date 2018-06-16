@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { PopupService } from './popup.service';
 import { Observable } from 'rxjs/Observable';
 import { AuthService } from './auth.service';
 import { GlobalService } from './global.service';

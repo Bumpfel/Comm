@@ -39,11 +39,10 @@ a {
 
 
 
-
 /* Forms */
 button {
     height: 25px;
-    margin: 2px;
+    margin: 2px 0;
 }
 
 input, select {
@@ -51,9 +50,9 @@ input, select {
 }
 
 input[type=text], input[type=number], input[type=password] {
-    width: 220px;
+    width: 214px;
     padding: 0 3px;
-    margin: 2px;
+    margin: 2px 0;
     -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
@@ -73,14 +72,18 @@ input[type=checkbox]:focus {
 }
 
 textarea {
-    width: 218px;
+    width: 216px;
     height: 200px;
     resize: none;
+    padding: 5px 3px;
+    margin: 2px 0;
+    font-family: Arial;
 }
 
 select {
     width: 224px;
     height: 29px;
+    margin: 2px 0;
 }
 
 

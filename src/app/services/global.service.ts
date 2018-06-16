@@ -17,6 +17,10 @@ export class GlobalService {
     return str;
   }
 
+  isNotEmpty(name: string) {
+    return name.trim().length > 0;
+  }
+  
   getData(): Observable<Global> {
     return this.afs.doc<Global>('data/global').valueChanges();
   }

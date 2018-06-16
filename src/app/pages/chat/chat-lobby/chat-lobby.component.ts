@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestoreCollection, AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
-import { AuthService } from '../../services/auth.service';
-import { GlobalService } from '../../services/global.service';
-import { MessageService } from '../../services/message.service';
-import { PopupService } from '../../services/popup.service';
-import { ChatService } from '../../services/chat.service';
+import { AuthService } from '../../../services/auth.service';
+import { MessageService } from '../../../services/message.service';
+import { ChatService } from '../../../services/chat.service';
 
 @Component({
   selector: 'app-chat-lobby',
@@ -27,9 +25,7 @@ export class ChatLobbyComponent implements OnInit {
   constructor(private afs: AngularFirestore,
     private authService: AuthService,
     private chatService: ChatService,
-    // private globalService: GlobalService,
-    private messageService: MessageService,
-    private popupService: PopupService) { }
+    private messageService: MessageService) { }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => this.user = user);

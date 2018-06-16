@@ -17,9 +17,6 @@
         </button>
         <button type="reset" (click)="chatService.showCreateChannnelDialog = undefined" [disabled]="chatService.actionInProgress">Cancel</button>
       </form>
-      <br>
-      <button (click)="chatService.isUniqueName(channelName.value)">Test uniqueness</button>
-      <br>
     </div>
   </div>
 </div>
@@ -50,7 +47,3 @@
     </div>
   </div>
 </div>
-<br>
-<br>
-<br>
-<button type="button" (click)="createPopup('test')" *ngIf="user && user.admin">Test popup</button>

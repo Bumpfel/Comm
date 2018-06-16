@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
-import { AuthService } from '../../services/auth.service';
-import { GlobalService } from '../../services/global.service';
+import { AuthService } from '../../../services/auth.service';
+import { GlobalService } from '../../../services/global.service';
 import { ActivatedRoute } from '@angular/router';
-import { MessageService } from '../../services/message.service';
-import { ChatService } from '../../services/chat.service';
+import { MessageService } from '../../../services/message.service';
+import { ChatService } from '../../../services/chat.service';
 
 @Component({
   selector: 'app-chat-channel',

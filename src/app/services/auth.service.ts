@@ -13,6 +13,7 @@ export class AuthService {
 
   public user$: Observable<User>;
   private user: User;
+  public userDocRef;
 
   constructor(private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
@@ -20,8 +21,10 @@ export class AuthService {
     private messageService: MessageService) {
 
     this.user$ = this.afAuth.authState.switchMap(authUser => {
-      if (authUser)
-        return this.afs.doc<User>('users/' + authUser.uid).valueChanges();
+      if (authUser) {
+        this.userDocRef = this.afs.doc<User>('users/' + authUser.uid);
+        return this.userDocRef.valueChanges();
+      }
       else
         return Observable.of(null);
     });
