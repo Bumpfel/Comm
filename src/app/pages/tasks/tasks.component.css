@@ -1,59 +1,129 @@
 .container {
-    display: table;
     width: 100%;
-    border: 1px dashed red;
+    /* border: 1px dashed red; */
 }
 
 
 .category {
-    /* float: left; */
-    display: flex;
-    width: 600px;
+    width: 756px;
     /* height: 200px; */
     margin: 20px 10px;
     border: 1px solid black;
 }
 
-.categoryName {
+.nameOfCategory {
     float: left;
     width: 125px;
     padding: 5px 10px;
-    border-right: 1px solid black;
     text-align: center;
+}
+.tasksInCategory, .tasksInStatusBlock {
+    display: flex;
+    flex-wrap: wrap;
+    /* float: left; */
+    padding: 5px;
+}
+
+.tasksInCategory {
+    border-left: 1px solid black;
 }
 
 .task {
-    float: left;
+    /* display: block; */
     /* height: 120px; */
-    border: 1px solid black;
+    width: 130px;
+    /* border: 1px solid black; */
     margin: 10px;
-    overflow: hidden;
+    /* overflow: hidden; */
     /* background-color: yellow; */
     /* background-color: yellowgreen; */
 }
+
+.disabledTask {
+    width: 130px;
+    margin: 10px;
+    opacity: .5;
+}
+.task .taskPrio {
+    /* height: 10px; */
+    font-size: 10px;
+    text-indent: 5px;
+    border: 1px solid black;
+}
+    .task .low {
+        background-color: green;
+    }
+    .task .medium {
+        background-color: yellowgreen;
+    }
+    .task .high {
+        background-color: gold;
+    }
+    .task .critical {
+        background-color: orangered;
+    }
+
+    
+.task .main {
+    float: left;
+    /* width: 100%; */
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
 .task .taskName {
     float: left;
-    height: 100%;
-    padding: 10px 15px;
+    /* display: block; */
+    width: 77px;
+    max-height: 100px;
+    padding: 10px 10px;
+    overflow: hidden;
+    word-wrap: break-word;
     /* margin: 0; */
-    /* border-right: 1px solid black; */
+    /* border: 1px dashed blueviolet; */
+    /* border-left: 1px solid black;*/
+    border-right: 1px solid black;
     /* background-color: lightgrey; */
+
+
+    /* white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; */
 }
-.task .taskData {
-    float: left;
+.task .taskPoints {
+    float: right;
     /* height: 100%; */
-    padding: 10px 15px;
-    border-left: 1px solid black;
-    background-color: orangered;
+    width: 10px;
+    padding: 10px 10px;
+    /* border: 1px dotted blue; */
+    /* border-left: 1px solid black; */
+    text-align: center;
     /* margin: 0; */
 }
+.task .taskButtons {
+    float: left;
+    width: 128px;
+    height: 15px;
+    text-indent: 3px;
+    font-size: 12px;
+    /* border: 1px dashed red; */
+    border: 1px solid black;
+}
+
+button.addTask {
+    margin: 10px;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+} 
+
 
 .statusBlock {
     float: left;
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    /* height: 300px; */
     margin: 20px 10px;
-    border: 1px solid black
+    border: 1px solid black;
 }
 
 .statusName {

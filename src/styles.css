@@ -27,15 +27,18 @@ a {
     position: relative;
     z-index: 1;
 }
-
 .popup {
     position: absolute;
-    top: 20px;
+    top: 25px;
     left: 30px;
     padding: 20px;
     border: 1px solid black;
     background-color: white;
 }
+    .popup.mediumPrompt {
+        width: 300px;
+    }
+    /* .popup.  */
 
 
 
