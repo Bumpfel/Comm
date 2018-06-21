@@ -34,6 +34,17 @@ export class TaskService {
     });
   }
 
+  filterTasksByStatus(tasks: Task[], status: string): Task[] {
+    let newTasks: Task[] = new Array<Task>();
+    if(tasks) {
+      for(let task of tasks) {
+        if (task.status == status)
+        newTasks.push(task);
+      }
+    }
+    return newTasks;
+  }
+
   newCategory(name: string): void {
     this.actionInProgress = true;
     let trimmedName = name.trim();
@@ -90,6 +101,9 @@ export class TaskService {
     task.description = newDescription;
     task.points = newPoints;
     task.priority = newPriority;
+    // if(!task.editedDate)
+    //   task.editedDate = new Array<any>();
+    // task.editedDate.push(new Date());
 
     ref.update({ 'tasks': tasks })
       .then(() => {
@@ -100,13 +114,16 @@ export class TaskService {
   }
 
   deleteTask(category_key: string, id: number) {
+    this.actionInProgress = true;
     let ref = this.catsRef.doc<TaskCategory>(category_key);
     ref.valueChanges().subscribe(cat => {
       for (let i = 0; i < cat.tasks.length; i++) {
         if (cat.tasks[i].id == id) {
           cat.tasks.splice(i, 1);
           ref.update({ 'tasks': cat.tasks })
-            .then(() => {
+          .then(() => {
+            this.closePopups();
+            this.actionInProgress = false;
               this.messageService.addMessage("delete", "Task deleted");
             });
           break;
@@ -117,12 +134,11 @@ export class TaskService {
 
   changeTaskStatus(category_key: string, id: number, newStatus: string) {
     let ref = this.catsRef.doc<TaskCategory>(category_key);
-    ref.valueChanges().subscribe(cat => {
-      let tasks: Task[] = cat.tasks;
+    // ref.valueChanges().subscribe(cat => {
+      let tasks: Task[] = this.taskCategories.find(cat => cat.name_key == category_key).tasks
       let task: Task = tasks.find(task => task.id == id);
       task.status = newStatus;
-      ref.update({ 'tasks': tasks }).then(() => console.log("changed status"));
-    });
+      ref.update({ 'tasks': tasks })//.then(() => console.log("changed status"));
   }
 
   showCategoryPopup() {
@@ -144,5 +160,7 @@ export class TaskService {
     this.categoryPopup = false;
     this.newTaskPopup = false;
     this.editTaskPopup = false;
+    this.showDeleteConfirmation = false;
   }
+
 }

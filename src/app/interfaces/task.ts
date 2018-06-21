@@ -12,6 +12,9 @@ interface Task {
     description: string;
     priority: number;
     points: number;
-    deadline?: string;
     status: string;
+    deadline?: string;
+    editedDate?: any[];
+    startedDate?: string;
+    completedDate?: string;
 }

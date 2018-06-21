@@ -1,34 +1,41 @@
-.container {
-    width: 100%;
-    /* border: 1px dashed red; */
-}
-
-
 .category {
-    width: 756px;
-    /* height: 200px; */
-    margin: 20px 10px;
-    border: 1px solid black;
+    /* width: 1000px; */
+    margin: 0 10px 20px 0;
+    /* border: 1px dashed red; */
+    display: flex;
+    flex-wrap: nowrap;
 }
 
 .nameOfCategory {
-    float: left;
     width: 125px;
     padding: 5px 10px;
     text-align: center;
+    border: 1px solid black;
 }
-.tasksInCategory, .tasksInStatusBlock {
+
+section.tasks {
     display: flex;
     flex-wrap: wrap;
-    /* float: left; */
+    width: 300px;
+    padding: 5px;
+    border: 1px solid black;
+    border-left: none;
+}
+
+.headerSpacer {
+    display: inline-block;
+    width: 120px;
+    padding: 5px 10px;
+}
+.sectionHeader {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: bold;
+    width: 300px;
     padding: 5px;
 }
 
-.tasksInCategory {
-    border-left: 1px solid black;
-}
-
-.task {
+.task, .disabledTask {
     /* display: block; */
     /* height: 120px; */
     width: 130px;
@@ -40,10 +47,9 @@
 }
 
 .disabledTask {
-    width: 130px;
-    margin: 10px;
     opacity: .5;
 }
+
 .task .taskPrio {
     /* height: 10px; */
     font-size: 10px;
@@ -115,8 +121,7 @@ button.addTask {
     font-size: 20px;
     width: 50px;
     height: 50px;
-} 
-
+}
 
 .statusBlock {
     float: left;

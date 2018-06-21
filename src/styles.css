@@ -35,12 +35,22 @@ a {
     border: 1px solid black;
     background-color: white;
 }
-    .popup.mediumPrompt {
+    .popup.mediumPrompt, .popup_fixed.popup.mediumPrompt {
         width: 300px;
     }
-    /* .popup.  */
 
+.popup_fixed {
+    position: fixed;
+    top: 100px;
+    left: 200px;
+    padding: 20px;
+    border: 1px solid black;
+    background-color: white;
+}
 
+.link {
+    cursor: pointer;
+}
 
 /* Forms */
 button {
