@@ -1,0 +1,41 @@
+<div *ngIf="user else showLogin">
+
+  <!-- New Assignment Popup -->
+  <div class="popup_fixed" *ngIf="assignmentService.newAssignmentPopup">
+    <form (ngSubmit)="assignmentService.newAssignment(name.value)">
+      <h4>New Assignment</h4>
+      <input type="text" placeholder="Name" autocomplete="off" #name name="n" [disabled]="assignmentService.actionInProgress">
+      <br>
+      <button type="submit" [disabled]="assignmentService.actionInProgress">
+        Create
+        <i class="fa fa-spinner fa-spin" *ngIf="assignmentService.actionInProgress"></i>
+      </button>
+      <button type="reset" (click)="assignmentService.closePopups()" [disabled]="assignmentService.actionInProgress">Cancel</button>
+    </form>
+  </div>
+
+  <button (click)="assignmentService.showNewAssignmentPopup()">New Assignment</button>
+  <br>
+  <!-- Assignments -->
+  <h2>Assignments</h2>
+  <div class="assignment header">
+    <div>Task name</div>
+    <div>#Tasks Not started</div>
+    <div>#Tasks in progress</div>
+    <div>#Completed tasks</div>
+
+  </div>
+  <div class="assignment" *ngFor="let assignment of assignments">
+    <div>
+      <a [routerLink]="'/assignments/' + assignment.name.toLowerCase()">{{ assignment.name }}</a>
+    </div>
+    <div>?</div>
+    <div>?</div>
+    <div>?</div>
+  </div>
+</div>
+
+
+<ng-template #showLogin>
+  You have to be logged in as a registered user to view this page
+</ng-template>

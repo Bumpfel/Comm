@@ -28,8 +28,10 @@ import { GlobalService } from './services/global.service';
 import { AuthService } from './services/auth.service';
 import { MessageService } from './services/message.service';
 import { ChatService } from './services/chat.service';
-import { TasksComponent } from './pages/tasks/tasks.component';
+import { AssignmentService } from './services/assignment.service';
 import { TaskService } from './services/task.service';
+import { AssignmentLobbyComponent } from './pages/assignments/assignment-lobby/assignment-lobby.component';
+import { AssignmentTasksComponent } from './pages/assignments/assignment-tasks/assignment-tasks.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import { TaskService } from './services/task.service';
     StartComponent,
     TopnavbarComponent,
     MessagesComponent,
-    TasksComponent
+    AssignmentLobbyComponent,
+    AssignmentTasksComponent
   ],
   imports: [
     BrowserModule,
@@ -55,6 +58,7 @@ import { TaskService } from './services/task.service';
     AuthService,
     MessageService,
     ChatService,
+    AssignmentService,
     TaskService
   ],
   bootstrap: [AppComponent]

@@ -1,13 +1,15 @@
 <div *ngIf="user && !user.guest else showLogin">
-
-  <button (click)="taskService.showCategoryPopup()" [disabled]="taskService.categoryPopup">New task category</button>
+  <h2 *ngIf="assignment">
+    <a routerLink="/assignments">Assignments</a> &rsaquo; {{ assignment.name +  }}
+  </h2>
+  <button (click)="taskService.showCategoryPopup()" [disabled]="taskService.categoryPopup">New category</button>
   <br>
   <!-- New Category -->
   <div class="popupContainer" *ngIf="taskService.categoryPopup">
     <div class="popup">
-      <h4>New task category</h4>
-      <form (ngSubmit)="taskService.newCategory(name.value)">
-        <input type="text" placeholder="Name" autocomplete="off" #name name="n">
+      <h4>New category</h4>
+      <form (ngSubmit)="taskService.newCategory(assignment, name.value)">
+        <input type="text" placeholder="Name" autocomplete="off" #name name="n" [disabled]="taskService.actionInProgress">
         <br>
         <button type="submit" [disabled]="taskService.actionInProgress">
           Submit
@@ -18,17 +20,19 @@
     </div>
   </div>
 
-  <!-- Categories -->
-  <div class="headerSpacer"></div>
-  <div class="sectionHeader">
-    Not Started
+  <div *ngIf="taskCategories && taskCategories.length > 0 else showEmpty">
+    <div class="headerSpacer"></div>
+    <div class="sectionHeader">
+      Not Started
+    </div>
+    <div class="sectionHeader">
+      In Progress
+    </div>
+    <div class="sectionHeader">
+      Completed
+    </div>
   </div>
-  <div class="sectionHeader">
-    In Progress
-  </div>
-  <div class="sectionHeader">
-    Completed
-  </div>
+  <!-- Display Categories -->
   <div class="category" *ngFor="let category of taskCategories">
     <div class="nameOfCategory">
       <h3>{{ category.name }}</h3>
@@ -199,8 +203,12 @@
     <!-- </div> -->
   </div>
 
-
 </div>
+
+
+<ng-template #showEmpty>
+  There are no categories in this story yet
+</ng-template>
 
 <ng-template #showLogin>
   <!-- <app-404></app-404> -->

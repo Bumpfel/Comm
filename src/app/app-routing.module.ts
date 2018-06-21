@@ -4,7 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ChatLobbyComponent } from './pages/chat/chat-lobby/chat-lobby.component';
 import { ChatChannelComponent } from './pages/chat/chat-channel/chat-channel.component';
 import { StartComponent } from './pages/start/start.component';
-import { TasksComponent } from './pages/tasks/tasks.component';
+import { AssignmentTasksComponent } from './pages/assignments/assignment-tasks/assignment-tasks.component';
+import { AssignmentLobbyComponent } from './pages/assignments/assignment-lobby/assignment-lobby.component';
 
 const routes : Routes = [
     {
@@ -25,8 +26,12 @@ const routes : Routes = [
       component:ChatChannelComponent
     },
     {
-      path:"tasks",
-      component:TasksComponent
+      path:"assignments",
+      component:AssignmentLobbyComponent
+    },
+    {
+      path:"assignments/:id",
+      component:AssignmentTasksComponent
     },
 ];
 @NgModule({

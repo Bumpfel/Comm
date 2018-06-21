@@ -1,0 +1,29 @@
+.assignment {
+    display: flex;
+    width: 800px;
+    font-size: 15px;
+    border-top: 1px solid black;
+    /* border-top: none; */
+}
+.header {
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-bottom: 1px solid black
+}
+
+.assignment div {
+    width: 25%;
+    /* width: 200px; */
+    /* border: 1px solid black;
+    border-left: none;
+    border-bottom: none; */
+}
+
+/* .assignment div:first-child {
+    border-left: none;
+}
+
+.assignment div:last-child {
+    border-right: none;
+} */

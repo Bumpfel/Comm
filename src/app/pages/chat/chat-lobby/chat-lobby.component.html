@@ -46,4 +46,8 @@
       </a>
     </div>
   </div>
+
+  <div *ngIf="!chatService.allChannels || chatService.allChannels.length == 0">
+    There are no chat channels currently
+  </div>
 </div>

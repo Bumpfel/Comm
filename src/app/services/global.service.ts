@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 
+import * as firebase from 'firebase/app';
+
 @Injectable()
 export class GlobalService {
 
@@ -25,6 +27,10 @@ export class GlobalService {
     return this.afs.doc<Global>('data/global').valueChanges();
   }
 
+  getServerTimeStamp() {
+    return firebase.firestore.FieldValue.serverTimestamp()
+  }
+  
   getTimeStamp(): string {
     var date = new Date();
     var YY = date.getFullYear();

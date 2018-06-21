@@ -3,15 +3,16 @@ import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreCollection 
 import { AuthService } from './auth.service';
 // import { GlobalService } from './global.service';
 import { MessageService } from './message.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Injectable()
 export class TaskService {
 
   user: User;
 
-  taskCategories: TaskCategory[];
+  assignment: Assignment;
   tasks: Task[];
-  catsRef: AngularFirestoreCollection<TaskCategory>;
+  assignRef: AngularFirestoreDocument<Assignment>;
 
   actionInProgress: boolean;
   categoryPopup: boolean;
@@ -23,14 +24,18 @@ export class TaskService {
   showDeleteConfirmation: boolean;
 
   constructor(private afs: AngularFirestore,
-    private authService: AuthService,
-    // private globalService: GlobalService,
-    private messageService: MessageService) {
+              private authService: AuthService,
+              // private globalService: GlobalService,
+              private messageService: MessageService,
+              private route: ActivatedRoute) {
 
     this.authService.user$.subscribe(user => {
       this.user = user;
-      this.catsRef = this.afs.collection<TaskCategory>('users/' + user.uid + '/taskCategories/');
-      this.catsRef.valueChanges().subscribe(cats => this.taskCategories = cats);
+        // this.assignRef = this.afs.doc<Assignment>("users/" + user.uid + "/assignments/" + assignmentId + "/");
+        // this.assignRef.valueChanges().subscribe(assignment => {
+        //   this.assignment = assignment;
+          // console.log(assignment.name);
+      // });
     });
   }
 
@@ -45,14 +50,14 @@ export class TaskService {
     return newTasks;
   }
 
-  newCategory(name: string): void {
+  newCategory(assignment: Assignment, name: string): void {
     this.actionInProgress = true;
     let trimmedName = name.trim();
     if (trimmedName.length > 0) {
       // let taskColRef = this.authService.userDocRef.collection('/taskCategories/')
       // taskColRef.add({ 'id': '-1', 'name': trimmedName })
-      let taskDocRef: AngularFirestoreDocument<TaskCategory> = this.afs.doc('users/' + this.user.uid + '/taskCategories/' + trimmedName.toLowerCase())
-      taskDocRef.set({ 'name': trimmedName, 'name_key': trimmedName.toLowerCase() }) //, 'nextTaskId': 0 })
+      let ref: AngularFirestoreDocument<any> = this.afs.doc("users/" + this.user.uid + "/assignments/" + assignment.name.toLowerCase() + "/" + trimmedName.toLowerCase() + "/_temp")
+      ref.set({ }) //, 'nextTaskId': 0 })
         .then((ref) => {
           this.closePopups();
           this.actionInProgress = false;
@@ -67,7 +72,7 @@ export class TaskService {
 
   newTask(category_key: string, newName: string, newDescription: string, newPoints: number, newPriority: number): void {
     this.actionInProgress = true;
-    let ref = this.catsRef.doc(category_key);
+    let ref = this.assignRef.doc(category_key);
     // ref.valueChanges().subscribe(category => {
     for (let category of this.taskCategories) { // bad solution
       if (category.name_key == category_key) {
@@ -91,7 +96,7 @@ export class TaskService {
 
   editTask(category_key: string, id: number, newName: string, newDescription: string, newPoints: number, newPriority: number): void {
     this.actionInProgress = true;
-    let ref = this.catsRef.doc(category_key);
+    let ref = this.assignRef.doc(category_key);
     // for (let category of this.taskCategories) { // bad solution. try using find instead.
     //   if (category.name_key == category_key) {
     let category: TaskCategory = this.taskCategories.find(category => category_key == category.name_key);
@@ -115,7 +120,7 @@ export class TaskService {
 
   deleteTask(category_key: string, id: number) {
     this.actionInProgress = true;
-    let ref = this.catsRef.doc<TaskCategory>(category_key);
+    let ref = this.assignRef.doc<TaskCategory>(category_key);
     ref.valueChanges().subscribe(cat => {
       for (let i = 0; i < cat.tasks.length; i++) {
         if (cat.tasks[i].id == id) {
@@ -133,7 +138,7 @@ export class TaskService {
   }
 
   changeTaskStatus(category_key: string, id: number, newStatus: string) {
-    let ref = this.catsRef.doc<TaskCategory>(category_key);
+    let ref = this.assignRef.doc<TaskCategory>(category_key);
     // ref.valueChanges().subscribe(cat => {
       let tasks: Task[] = this.taskCategories.find(cat => cat.name_key == category_key).tasks
       let task: Task = tasks.find(task => task.id == id);
