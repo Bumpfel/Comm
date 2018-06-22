@@ -6,9 +6,21 @@
     flex-wrap: nowrap;
 }
 
+.headerSpacer {
+    display: inline-block;
+    width: 120px;
+    padding: 5px 10px;
+}
+.sectionHeader {
+    display: inline-block;
+    font-weight: bold;
+    width: 300px;
+    padding: 5px;
+}
+
 .nameOfCategory {
     width: 125px;
-    padding: 5px 10px;
+    padding: 0px 10px;
     text-align: center;
     border: 1px solid black;
 }
@@ -22,25 +34,13 @@ section.tasks {
     border-left: none;
 }
 
-.headerSpacer {
-    display: inline-block;
-    width: 120px;
-    padding: 5px 10px;
-}
-.sectionHeader {
-    display: inline-block;
-    font-size: 15px;
-    font-weight: bold;
-    width: 300px;
-    padding: 5px;
-}
-
 .task, .disabledTask {
     /* display: block; */
     /* height: 120px; */
     width: 130px;
     /* border: 1px solid black; */
     margin: 10px;
+    font-size: 12px;
     /* overflow: hidden; */
     /* background-color: yellow; */
     /* background-color: yellowgreen; */

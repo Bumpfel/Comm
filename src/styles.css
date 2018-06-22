@@ -53,6 +53,9 @@ a {
 }
 
 /* Forms */
+fieldset {
+    border: none;
+}
 button {
     height: 25px;
     margin: 2px 0;

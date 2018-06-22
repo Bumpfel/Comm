@@ -1,9 +1,9 @@
 <div *ngIf="user && !user.guest else showLogin">
 
-  <button (click)="taskService.showCategoryPopup()" [disabled]="taskService.categoryPopup">New task category</button>
+  <button (click)="taskService.showNewCategoryPopup()" [disabled]="taskService.newCategoryPopup">New task category</button>
   <br>
   <!-- New Category -->
-  <div class="popupContainer" *ngIf="taskService.categoryPopup">
+  <div class="popupContainer" *ngIf="taskService.newCategoryPopup">
     <div class="popup">
       <h4>New task category</h4>
       <form (ngSubmit)="taskService.newCategory(name.value)">
@@ -31,12 +31,23 @@
   </div>
   <div class="category" *ngFor="let category of taskCategories">
     <div class="nameOfCategory">
-      <h3>{{ category.name }}</h3>
+      <h4>
+        {{ category.name }}
+        <i class="fa fa-minus link" (click)="taskService.collapseCategory(category.name, true)" title="Collapse category" *ngIf="!category.collapsed else showCollapsedName"></i>
+        <ng-template #showCollapsedName>
+          <i class="fa fa-plus link" (click)="taskService.collapseCategory(category.name, false)" title="Expand category"></i>
+          <span *ngIf="category.tasks && category.tasks.length">({{ category.tasks.length }})</span>
+        </ng-template>
+      </h4>
+      <div *ngIf="!category.collapsed">
+        <i class="fa fa-trash-o link" (click)="taskService.showDeleteCategoryPopup(); activeCategory = category"></i>
+        <i class="fa fa-edit link"></i>
+      </div>
     </div>
 
     <!-- Tasks Not started -->
-    <section class="tasks">
-      <div class="task" *ngFor="let task of taskService.filterTasksByStatus(category.tasks, 'not started')" [class.disabledTask]="taskService.editTaskPopup && activeTask != task">
+    <section class="tasks" *ngIf="!category.collapsed else showCollapsedSection">
+      <div class="task" *ngFor="let task of taskService.filterAndSortTasksByStatus(category.tasks, 'not started')" [class.disabledTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask != task">
         <div class="taskPrio {{ task.priority }}" title="Task priority">
           {{ task.priority }}
         </div>
@@ -51,22 +62,23 @@
         </div>
         <!-- Buttons -->
         <div class="taskButtons">
-          <i class="fa fa-trash link" (click)="taskService.showDeleteConfirmation = true; name_key = category.name_key; deleteId = task.id"></i>
-          <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); activeCategory = category; destinationCategory = category; activeTask = task"></i>
           <i class="fa fa-forward link" (click)="taskService.changeTaskStatus(category.name_key, task.id, 'in progress')"></i>
         </div>
       </div>
 
-      <button class="addTask" (click)="taskService.showNewTaskPopup(); activeCategory = category; testXY(category.name)" [id]="category.name" [disabled]="taskService.newTaskPopup && activeCategory == category">
+      <button class="addTask" (click)="taskService.showNewTaskPopup(); activeCategory = category"
+        [disabled]="taskService.newTaskPopup && activeCategory == category || taskService.actionInProgress">
         +
       </button>
     </section>
 
     <!-- Tasks In Progress -->
-    <section class="tasks">
-      <div class="task" *ngFor="let task of taskService.filterTasksByStatus(category.tasks, 'in progress')" [class.disabledTask]="taskService.editTaskPopup && activeTask != task">
-        <div class="taskPrio {{ task.priority }}" title="{{ task.editedDate }}">
-         <!-- title="Task priority"> -->
+    <section class="tasks" *ngIf="!category.collapsed else showCollapsedSection">
+      <div class="task" *ngFor="let task of taskService.filterAndSortTasksByStatus(category.tasks, 'in progress')" [class.disabledTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask != task">
+        <div class="taskPrio {{ task.priority }}" title="Task priority">
+          <!-- title="Task priority"> -->
           {{ task.priority }}
         </div>
 
@@ -79,18 +91,18 @@
           </div>
         </div>
 
-        <div class="taskButtons">
+        <div class="taskButtons" title="Started at {{ task.startedAt.substring(0, 16) }}">
           <i class="fa fa-backward link" (click)="taskService.changeTaskStatus(category.name_key, task.id, 'not started')"></i>
-          <i class="fa fa-trash link" (click)="taskService.showDeleteConfirmation = true; name_key = category.name_key; deleteId = task.id"></i>
-          <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); activeCategory = category; destinationCategory = category; activeTask = task"></i>
           <i class="fa fa-forward link" (click)="taskService.changeTaskStatus(category.name_key, task.id, 'completed')"></i>
         </div>
       </div>
     </section>
 
     <!-- Completed Tasks -->
-    <section class="tasks">
-      <div class="task" *ngFor="let task of taskService.filterTasksByStatus(category.tasks, 'completed')" [class.disabledTask]="taskService.editTaskPopup && activeTask != task">
+    <section class="tasks" *ngIf="!category.collapsed else showCollapsedSection">
+      <div class="task" style="opacity: .65" *ngFor="let task of taskService.filterAndSortTasksByStatus(category.tasks, 'completed')" [class.disabledTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask != task">
         <div class="taskPrio {{ task.priority }}" title="Task priority">
           {{ task.priority }}
         </div>
@@ -104,13 +116,64 @@
           </div>
         </div>
 
-        <div class="taskButtons">
+        <div class="taskButtons" title="Completed at {{ task.completedAt.substring(0, 16) }}">
           <i class="fa fa-backward link" (click)="taskService.changeTaskStatus(category.name_key, task.id, 'in progress')"></i>
-          <i class="fa fa-trash link" (click)="taskService.showDeleteConfirmation = true; name_key = category.name_key; deleteId = task.id"></i>
-          <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); activeCategory = category; destinationCategory = category; activeTask = task"></i>
         </div>
       </div>
     </section>
+  </div>
+
+
+  <!-- Delete Category Confirmation Popup -->
+  <div class="popup_fixed mediumPrompt" *ngIf="taskService.deleteCategoryPopup">
+      This action cannot be undone! Are you sure you want to delete the category (and all of its tasks)?
+      <br>
+      <button (click)="taskService.deleteCategory(activeCategory)" [disabled]="taskService.actionInProgress">
+        Yes
+        <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+      </button>
+      <button (click)="taskService.closePopups()" [disabled]="taskService.actionInProgress">No</button>
+    </div>
+
+
+ <!-- New Task Popup -->
+ <div class="popup_fixed mediumPrompt" *ngIf="taskService.newTaskPopup">
+    <!-- <div class="popup"> -->
+    <h4>New task in {{ activeCategory.name }}</h4>
+    <form (ngSubmit)="taskService.newTask(activeCategory.name_key, name.value, description.value, points.value, priority.value)">
+      <fieldset [disabled]="taskService.actionInProgress">
+        <input type="text" placeholder="Name" autofocus autocomplete="off" #name name="n">
+        <br>
+        <textarea placeholder="Description" autocomplete="off" #description name="d"></textarea>
+        <br>
+        <select #points name="po">
+          <option value="1">Points: 1</option>
+          <option value="2">Points: 2</option>
+          <option value="3">Points: 3</option>
+          <option value="5">Points: 5</option>
+          <option value="8">Points: 8</option>
+          <option value="13">Points: 13</option>
+          <option value="21">Points: 21</option>
+        </select>
+        <br>
+        <select #priority name="pr">
+          <option value="low">Priority: Low</option>
+          <option value="medium">Priority: Medium</option>
+          <option value="high">Priority: High</option>
+          <option value="critical">Priority: Critical</option>
+        </select>
+        <br>
+
+        <button type="submit" [disabled]="actionInProgress">
+          Submit
+          <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+        </button>
+        <button type="reset" (click)="taskService.closePopups()">Cancel</button>
+      </fieldset>
+    </form>
+    <!-- </div> -->
   </div>
 
 
@@ -118,89 +181,64 @@
   <div class="popup_fixed" *ngIf="taskService.editTaskPopup">
     <!-- <div class="popup"> -->
     <h4>Edit task</h4>
-    <form (ngSubmit)="taskService.editTask(name_key, activeTask.id, name.value, description.value, points.value, priority.value)">
-      <input type="text" placeholder="Name" autofocus autocomplete="off" [ngModel]="activeTask.name" #name name="n">
-      <br>
-      <textarea placeholder="Description" autocomplete="off" [ngModel]="activeTask.description" #description name="d"></textarea>
-      <br>
-      <select [ngModel]="activeTask.points" #points name="po">
-        <option value="1">Points: 1</option>
-        <option value="2">Points: 2</option>
-        <option value="3">Points: 3</option>
-        <option value="5">Points: 5</option>
-        <option value="8">Points: 8</option>
-        <option value="13">Points: 13</option>
-        <option value="21">Points: 21</option>
-      </select>
-      <br>
-      <select [ngModel]="activeTask.priority" #priority name="pr">
-        <option value="low">Priority: Low</option>
-        <option value="medium">Priority: Medium</option>
-        <option value="high">Priority: High</option>
-        <option value="critical">Priority: Critical</option>
-      </select>
-      <br>
+    <form (ngSubmit)="taskService.editTask(activeCategory, destinationCategory, activeTask, name.value, description.value, points.value, priority.value)">
+      <fieldset [disabled]="taskService.actionInProgress">
+        <select [(ngModel)]="destinationCategory" name="dc">
+          <option *ngFor="let category of taskCategories" [ngValue]="category">{{ category.name }}</option>
+        </select>
+        <br>
+        <input type="text" placeholder="Name" autofocus autocomplete="off" [ngModel]="activeTask.name" #name name="n">
+        <br>
+        <textarea placeholder="Description" autocomplete="off" [ngModel]="activeTask.description" #description name="d"></textarea>
+        <br>
+        <select [ngModel]="activeTask.points" #points name="po">
+          <option value="1">Points: 1</option>
+          <option value="2">Points: 2</option>
+          <option value="3">Points: 3</option>
+          <option value="5">Points: 5</option>
+          <option value="8">Points: 8</option>
+          <option value="13">Points: 13</option>
+          <option value="21">Points: 21</option>
+        </select>
+        <br>
+        <select [ngModel]="activeTask.priority" #priority name="pr">
+          <option value="low">Priority: Low</option>
+          <option value="medium">Priority: Medium</option>
+          <option value="high">Priority: High</option>
+          <option value="critical">Priority: Critical</option>
+        </select>
+        <br>
 
-      <button type="submit" [disabled]="taskService.actionInProgress">
-        Edit
-        <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
-      </button>
-      <button type="reset" (click)="taskService.closePopups()" [disabled]="taskService.actionInProgress">Cancel</button>
+        <button type="submit">
+          Edit
+          <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+        </button>
+        <button type="reset" (click)="taskService.closePopups()">Cancel</button>
+      </fieldset>
     </form>
     <!-- </div> -->
   </div>
 
-  <!-- Delete Confirmation Popup -->
-  <div class="popup_fixed" *ngIf="taskService.showDeleteConfirmation">
+
+  <!-- Delete Task Confirmation Popup -->
+  <div class="popup_fixed" *ngIf="taskService.deleteTaskPopup">
     <!-- <div class="popup mediumPrompt"> -->
     This action cannot be undone! Are you sure you want to delete the task?
     <br>
-    <button (click)="taskService.deleteTask(name_key, deleteId)" [disabled]="taskService.actionInProgress">
+    <button (click)="taskService.deleteTask(name_key, activeTask.id)" [disabled]="taskService.actionInProgress">
       Yes
       <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
     </button>
-    <button (click)="taskService.showDeleteConfirmation = false" [disabled]="taskService.actionInProgress">No</button>
-    <!-- </div> -->
-  </div>
-
-  <!-- New Task Popup -->
-  <div class="popup_fixed mediumPrompt" *ngIf="taskService.newTaskPopup">
-    <!-- <div class="popup"> -->
-    <h4>New task in {{ activeCategory.name }}</h4>
-    <form (ngSubmit)="taskService.newTask(activeCategory.name_key, name.value, description.value, points.value, priority.value)">
-      <input type="text" placeholder="Name" autofocus autocomplete="off" #name name="n">
-      <br>
-      <textarea placeholder="Description" autocomplete="off" #description name="d"></textarea>
-      <br>
-      <select #points name="po">
-        <option value="1">Points: 1</option>
-        <option value="2">Points: 2</option>
-        <option value="3">Points: 3</option>
-        <option value="5">Points: 5</option>
-        <option value="8">Points: 8</option>
-        <option value="13">Points: 13</option>
-        <option value="21">Points: 21</option>
-      </select>
-      <br>
-      <select #priority name="pr">
-        <option value="low">Priority: Low</option>
-        <option value="medium">Priority: Medium</option>
-        <option value="high">Priority: High</option>
-        <option value="critical">Priority: Critical</option>
-      </select>
-      <br>
-
-      <button type="submit" [disabled]="actionInProgress">
-        Submit
-        <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
-      </button>
-      <button type="reset" (click)="taskService.closePopups()" [disabled]="taskService.actionInProgress">Cancel</button>
-    </form>
+    <button (click)="taskService.closePopups()" [disabled]="taskService.actionInProgress">No</button>
     <!-- </div> -->
   </div>
 
 
-</div>
+ </div>
+
+ <ng-template #showCollapsedSection>
+    <section class="tasks"></section>
+ </ng-template>
 
 <ng-template #showLogin>
   <!-- <app-404></app-404> -->

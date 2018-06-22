@@ -3,6 +3,9 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { AuthService } from '../../services/auth.service';
 import { TaskService } from '../../services/task.service';
 
+
+import { TaskCategory } from '../../interfaces/task';
+
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',

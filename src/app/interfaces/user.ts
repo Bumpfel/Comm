@@ -8,4 +8,5 @@ interface User {
   chatNameColour?: string;
   photoUrl?: any;
   nextTaskId?: number;
+  // nextTaskSortId?: number;
 }

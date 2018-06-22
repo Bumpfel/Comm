@@ -1,20 +1,23 @@
-interface TaskCategory {
-    // id: string;
+export interface TaskCategory {
     name: string;
-    name_key: string;
-    // nextTaskId: number;
-    tasks?: Task[];
+    name_key?: string; // don't think I need this
+    // sortId: number;
+    tasks: Task[];
+    collapsed?: boolean;
 }
 
-interface Task {
+export interface Task {
     id: number;
     name: string;
     description: string;
     priority: number;
     points: number;
     status: string;
-    deadline?: string;
-    editedDate?: any[];
-    startedDate?: string;
-    completedDate?: string;
+    startedAt?: string;
+    editedAt?: string; //MultiDate;
+    completedAt?: string;
+}
+
+export interface MultiDate { // not working
+    timestamp: string[];
 }
