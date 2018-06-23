@@ -17,6 +17,8 @@ export class TasksComponent implements OnInit {
 
   taskCategories: TaskCategory[];
 
+  prioText: string[] = ["disabled", "low", "medium", "high", "critical"];
+
   constructor(private afs: AngularFirestore,
               private authService: AuthService,
               private taskService: TaskService) { }
@@ -31,6 +33,11 @@ export class TasksComponent implements OnInit {
     });
   }
 
+  // ngOnDestroy() {
+  //   for(let cat of this.taskCategories) {
+  //     this.taskService.saveCollapsedCategoryState(cat.name, cat.collapsed); // only saves states if you navigate to a different page on the website 
+  //   }
+  // }
 
   testXY(elementId: string) {
     console.log("x: " + window.document.getElementById(elementId).offsetLeft);

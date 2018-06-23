@@ -1,57 +1,54 @@
 <div *ngIf="user && !user.guest else showLogin">
 
   <button (click)="taskService.showNewCategoryPopup()" [disabled]="taskService.newCategoryPopup">New task category</button>
-  <br>
-  <!-- New Category -->
-  <div class="popupContainer" *ngIf="taskService.newCategoryPopup">
-    <div class="popup">
-      <h4>New task category</h4>
-      <form (ngSubmit)="taskService.newCategory(name.value)">
-        <input type="text" placeholder="Name" autocomplete="off" #name name="n">
-        <br>
-        <button type="submit" [disabled]="taskService.actionInProgress">
-          Submit
-          <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
-        </button>
-        <button type="reset" [disabled]="taskService.actionInProgress" (click)="taskService.closePopups()">Cancel</button>
-      </form>
-    </div>
-  </div>
 
   <!-- Categories -->
-  <div class="headerSpacer"></div>
-  <div class="sectionHeader">
-    Not Started
+  <div class="titleRow">
+    <!-- *ngIf="!category.collapsed"> -->
+    <div class="spacer"></div>
+    <div class="title">
+      Not Started
+    </div>
+    <div class="title">
+      In Progress
+    </div>
+    <div class="title">
+      Completed
+    </div>
   </div>
-  <div class="sectionHeader">
-    In Progress
-  </div>
-  <div class="sectionHeader">
-    Completed
-  </div>
-  <div class="category" *ngFor="let category of taskCategories">
+  <div class="category" *ngFor="let category of taskCategories" [class.wrap]="category.collapsed" [class.hidden]="taskService.pendingDeletion == category.name">
     <div class="nameOfCategory">
       <h4>
+        <!-- <span *ngIf="!taskService.showEditCategory || activeCategory != category"> -->
         {{ category.name }}
-        <i class="fa fa-minus link" (click)="taskService.collapseCategory(category.name, true)" title="Collapse category" *ngIf="!category.collapsed else showCollapsedName"></i>
+        <!-- </span> -->
+        <!-- <form (ngSubmit)="taskService.editCategory(category, name.value)" *ngIf="taskService.showEditCategory && activeCategory == category">
+          <input type="text" autofocus autocomplete="off" [value]="category.name" #name name="n" id="newName">
+          </form> -->
+        <span *ngIf="!category.collapsed else showCollapsedName">
+          <i class="fa fa-minus link" (click)="category.collapsed = true; taskService.collapseCategory(category.name, true)" title="Collapse category"
+            *ngIf="!category.collapsed else showCollapsedName"></i>
+          <!-- <i class="fa fa-minus link" (click)="category.collapsed = true" title="Collapse category"></i> -->
+          <br>
+          <i class="fa fa-trash-o link" (click)="taskService.showDeleteCategoryPopup(); activeCategory = category"></i>
+          <i class="fa fa-edit link" (click)="taskService.showEditCategoryPopup(); activeCategory = category"></i>
+        </span>
         <ng-template #showCollapsedName>
-          <i class="fa fa-plus link" (click)="taskService.collapseCategory(category.name, false)" title="Expand category"></i>
+          <i class="fa fa-plus link" (click)="category.collapsed = false; taskService.collapseCategory(category.name, false)" title="Expand category"></i>
+          <!-- <i class="fa fa-plus link" (click)="category.collapsed = false" title="Expand category"></i> -->
+          <br>
           <span *ngIf="category.tasks && category.tasks.length">({{ category.tasks.length }})</span>
         </ng-template>
       </h4>
-      <div *ngIf="!category.collapsed">
-        <i class="fa fa-trash-o link" (click)="taskService.showDeleteCategoryPopup(); activeCategory = category"></i>
-        <i class="fa fa-edit link"></i>
-      </div>
     </div>
 
     <!-- Tasks Not started -->
-    <section class="tasks" *ngIf="!category.collapsed else showCollapsedSection">
-      <div class="task" *ngFor="let task of taskService.filterAndSortTasksByStatus(category.tasks, 'not started')" [class.disabledTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask != task">
-        <div class="taskPrio {{ task.priority }}" title="Task priority">
-          {{ task.priority }}
+    <section class="tasks" *ngIf="!category.collapsed">
+      <div class="task" *ngFor="let task of taskService.filterByStatusAndSort(category.tasks, 'not started')" [class.activeTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask == task"
+        [class.disabledTask]="task.priority == 0">
+        <div class="taskPrio {{ prioText[task.priority] }}" title="Task priority">
+          {{ prioText[task.priority] }}
         </div>
-
         <div class="main">
           <div class="taskName" title="{{ task.description }}">
             {{ task.name }}
@@ -62,26 +59,24 @@
         </div>
         <!-- Buttons -->
         <div class="taskButtons">
-          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); activeCategory = category; activeTask = task"></i>
           <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); activeCategory = category; destinationCategory = category; activeTask = task"></i>
-          <i class="fa fa-forward link" (click)="taskService.changeTaskStatus(category.name_key, task.id, 'in progress')"></i>
+          <i class="fa fa-forward link" (click)="taskService.changeTaskStatus(category, task.id, 'in progress')" *ngIf="task.priority > 0"></i>
         </div>
       </div>
 
-      <button class="addTask" (click)="taskService.showNewTaskPopup(); activeCategory = category"
-        [disabled]="taskService.newTaskPopup && activeCategory == category || taskService.actionInProgress">
+      <button class="addTask" (click)="taskService.showNewTaskPopup(); activeCategory = category" [disabled]="taskService.newTaskPopup && activeCategory == category || taskService.actionInProgress">
         +
       </button>
     </section>
 
     <!-- Tasks In Progress -->
-    <section class="tasks" *ngIf="!category.collapsed else showCollapsedSection">
-      <div class="task" *ngFor="let task of taskService.filterAndSortTasksByStatus(category.tasks, 'in progress')" [class.disabledTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask != task">
-        <div class="taskPrio {{ task.priority }}" title="Task priority">
-          <!-- title="Task priority"> -->
-          {{ task.priority }}
+    <section class="tasks" *ngIf="!category.collapsed">
+      <div class="task" *ngFor="let task of taskService.filterByStatusAndSort(category.tasks, 'in progress')" [class.activeTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask == task"
+        [class.disabledTask]="task.priority == 0">
+        <div class="taskPrio {{ prioText[task.priority] }}" title="Task priority">
+          {{ prioText[task.priority] }}
         </div>
-
         <div class="main">
           <div class="taskName" title="{{ task.description }}">
             {{ task.name }}
@@ -90,23 +85,23 @@
             {{ task.points }}
           </div>
         </div>
-
+        <!-- Buttons -->
         <div class="taskButtons" title="Started at {{ task.startedAt.substring(0, 16) }}">
-          <i class="fa fa-backward link" (click)="taskService.changeTaskStatus(category.name_key, task.id, 'not started')"></i>
-          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-backward link" (click)="taskService.changeTaskStatus(category, task.id, 'not started')" *ngIf="task.priority > 0"></i>
+          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); activeCategory = category; activeTask = task"></i>
           <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); activeCategory = category; destinationCategory = category; activeTask = task"></i>
-          <i class="fa fa-forward link" (click)="taskService.changeTaskStatus(category.name_key, task.id, 'completed')"></i>
+          <i class="fa fa-forward link" (click)="taskService.changeTaskStatus(category, task.id, 'completed')" *ngIf="task.priority > 0"></i>
         </div>
       </div>
     </section>
 
     <!-- Completed Tasks -->
-    <section class="tasks" *ngIf="!category.collapsed else showCollapsedSection">
-      <div class="task" style="opacity: .65" *ngFor="let task of taskService.filterAndSortTasksByStatus(category.tasks, 'completed')" [class.disabledTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask != task">
-        <div class="taskPrio {{ task.priority }}" title="Task priority">
-          {{ task.priority }}
+    <section class="tasks" *ngIf="!category.collapsed">
+      <div class="task" *ngFor="let task of taskService.filterByStatusAndSort(category.tasks, 'completed')" [class.activeTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask == task"
+        [class.disabledTask]="task.priority == 0">
+        <div class="taskPrio {{ prioText[task.priority] }}" title="Task priority">
+          {{ prioText[task.priority] }}
         </div>
-
         <div class="main">
           <div class="taskName" title="{{ task.description }}">
             {{ task.name }}
@@ -115,34 +110,64 @@
             {{ task.points }}
           </div>
         </div>
-
+        <!-- Buttons -->
         <div class="taskButtons" title="Completed at {{ task.completedAt.substring(0, 16) }}">
-          <i class="fa fa-backward link" (click)="taskService.changeTaskStatus(category.name_key, task.id, 'in progress')"></i>
-          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); name_key = category.name_key; activeTask = task"></i>
+          <i class="fa fa-backward link" (click)="taskService.changeTaskStatus(category, task.id, 'in progress')" *ngIf="task.priority > 0"></i>
+          <i class="fa fa-trash link" (click)="taskService.showDeleteTaskPopup(); activeCategory = category; activeTask = task"></i>
           <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(); activeCategory = category; destinationCategory = category; activeTask = task"></i>
         </div>
       </div>
     </section>
+
+  </div>
+
+
+  <!-- New Category Popup -->
+  <div class="popup_fixed" *ngIf="taskService.newCategoryPopup">
+    <h4>New category</h4>
+    <form (ngSubmit)="taskService.newCategory(name.value)">
+      <input type="text" placeholder="Name" autocomplete="off" #name name="n">
+      <br>
+      <button type="submit" [disabled]="taskService.actionInProgress">
+        Submit
+        <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+      </button>
+      <button type="reset" [disabled]="taskService.actionInProgress" (click)="taskService.closePopups()">Cancel</button>
+    </form>
+  </div>
+
+
+  <!-- Edit Category Popup -->
+  <div class="popup_fixed" *ngIf="taskService.editCategoryPopup">
+    <h4>Edit category</h4>
+    <form (ngSubmit)="taskService.editCategory(activeCategory, name.value)">
+      <input type="text" placeholder="Name" autocomplete="off" [ngModel]="activeCategory.name" #name name="n">
+      <br>
+      <button type="submit" [disabled]="taskService.actionInProgress">
+        Save
+        <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+      </button>
+      <button type="reset" [disabled]="taskService.actionInProgress" (click)="taskService.closePopups()">Cancel</button>
+    </form>
   </div>
 
 
   <!-- Delete Category Confirmation Popup -->
   <div class="popup_fixed mediumPrompt" *ngIf="taskService.deleteCategoryPopup">
-      This action cannot be undone! Are you sure you want to delete the category (and all of its tasks)?
-      <br>
-      <button (click)="taskService.deleteCategory(activeCategory)" [disabled]="taskService.actionInProgress">
-        Yes
-        <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
-      </button>
-      <button (click)="taskService.closePopups()" [disabled]="taskService.actionInProgress">No</button>
-    </div>
+    This action cannot be undone! Are you sure you want to delete the category (and all of its tasks)?
+    <br>
+    <button (click)="taskService.deleteCategory(activeCategory)" [disabled]="taskService.actionInProgress">
+      Yes
+      <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+    </button>
+    <button (click)="taskService.closePopups()" [disabled]="taskService.actionInProgress">No</button>
+  </div>
 
 
- <!-- New Task Popup -->
- <div class="popup_fixed mediumPrompt" *ngIf="taskService.newTaskPopup">
-    <!-- <div class="popup"> -->
+  <!-- New Task Popup -->
+  <div class="popup_fixed mediumPrompt" *ngIf="taskService.newTaskPopup">
     <h4>New task in {{ activeCategory.name }}</h4>
-    <form (ngSubmit)="taskService.newTask(activeCategory.name_key, name.value, description.value, points.value, priority.value)">
+    <form (ngSubmit)="taskService.newTask(activeCategory, name.value, description.value, points.value, priority.value)">
       <fieldset [disabled]="taskService.actionInProgress">
         <input type="text" placeholder="Name" autofocus autocomplete="off" #name name="n">
         <br>
@@ -159,10 +184,10 @@
         </select>
         <br>
         <select #priority name="pr">
-          <option value="low">Priority: Low</option>
-          <option value="medium">Priority: Medium</option>
-          <option value="high">Priority: High</option>
-          <option value="critical">Priority: Critical</option>
+          <option value="1">Priority: Low</option>
+          <option value="2">Priority: Medium</option>
+          <option value="3">Priority: High</option>
+          <option value="4">Priority: Critical</option>
         </select>
         <br>
 
@@ -173,15 +198,13 @@
         <button type="reset" (click)="taskService.closePopups()">Cancel</button>
       </fieldset>
     </form>
-    <!-- </div> -->
   </div>
 
 
   <!-- Edit Task Popup -->
   <div class="popup_fixed" *ngIf="taskService.editTaskPopup">
-    <!-- <div class="popup"> -->
     <h4>Edit task</h4>
-    <form (ngSubmit)="taskService.editTask(activeCategory, destinationCategory, activeTask, name.value, description.value, points.value, priority.value)">
+    <form (ngSubmit)="taskService.editTask(activeCategory, destinationCategory, activeTask.id, name.value, description.value, points.value, priority.value)">
       <fieldset [disabled]="taskService.actionInProgress">
         <select [(ngModel)]="destinationCategory" name="dc">
           <option *ngFor="let category of taskCategories" [ngValue]="category">{{ category.name }}</option>
@@ -202,43 +225,42 @@
         </select>
         <br>
         <select [ngModel]="activeTask.priority" #priority name="pr">
-          <option value="low">Priority: Low</option>
-          <option value="medium">Priority: Medium</option>
-          <option value="high">Priority: High</option>
-          <option value="critical">Priority: Critical</option>
+          <option value="0" *ngIf="activeTask.status != 'completed'">Disabled</option>
+          <option value="1">Priority: Low</option>
+          <option value="2">Priority: Medium</option>
+          <option value="3">Priority: High</option>
+          <option value="4">Priority: Critical</option>
         </select>
         <br>
 
         <button type="submit">
-          Edit
+          Save
           <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
         </button>
         <button type="reset" (click)="taskService.closePopups()">Cancel</button>
       </fieldset>
     </form>
-    <!-- </div> -->
   </div>
 
 
   <!-- Delete Task Confirmation Popup -->
-  <div class="popup_fixed" *ngIf="taskService.deleteTaskPopup">
-    <!-- <div class="popup mediumPrompt"> -->
+  <div class="popup_fixed mediumPrompt" *ngIf="taskService.deleteTaskPopup">
+
     This action cannot be undone! Are you sure you want to delete the task?
     <br>
-    <button (click)="taskService.deleteTask(name_key, activeTask.id)" [disabled]="taskService.actionInProgress">
+    <button (click)="taskService.deleteTask(activeCategory, activeTask.id)" [disabled]="taskService.actionInProgress">
       Yes
       <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
     </button>
     <button (click)="taskService.closePopups()" [disabled]="taskService.actionInProgress">No</button>
-    <!-- </div> -->
   </div>
 
 
- </div>
+</div>
 
- <ng-template #showCollapsedSection>
-    <section class="tasks"></section>
- </ng-template>
+<ng-template #showCollapsedSection>
+  <section class="tasks"></section>
+</ng-template>
 
 <ng-template #showLogin>
   <!-- <app-404></app-404> -->

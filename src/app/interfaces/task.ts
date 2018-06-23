@@ -1,6 +1,5 @@
 export interface TaskCategory {
     name: string;
-    name_key?: string; // don't think I need this
     // sortId: number;
     tasks: Task[];
     collapsed?: boolean;

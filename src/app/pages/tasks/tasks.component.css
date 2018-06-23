@@ -1,46 +1,106 @@
-.category {
-    /* width: 1000px; */
-    margin: 0 10px 20px 0;
-    /* border: 1px dashed red; */
+.titleRow {
     display: flex;
-    flex-wrap: nowrap;
+    /* flex-wrap: nowrap; */
+    /* display: inline-block; */
+    display: 1px dotted blue;
 }
 
-.headerSpacer {
-    display: inline-block;
-    width: 120px;
-    padding: 5px 10px;
-}
-.sectionHeader {
-    display: inline-block;
+/* .titleRow::after {
+    width: 100%;
+} */
+
+/* .spacer {
+    min-width: 125px;
+    width: 125px;
+    padding: 0 10px;
+    border: 1px dashed grey;
+} */
+.title {
+    /* display: flex; */
+    flex-wrap: nowrap;
+    /* width: 300px; */
+    min-width: 140px;
+    padding: 0 10px;
+    font-size: 11px;
     font-weight: bold;
-    width: 300px;
-    padding: 5px;
+    /* border: 1px solid red; */
+}
+
+.category {
+    display: flex;
+    /* flex-wrap: wrap; */
+    /* width: 1000px; */
+    /* margin: 0 10px 20px 0; */
+    margin-bottom: 20px;
+    /* border: 1px dashed red; */
+}
+.wrap {
+    display: inline-flex;
+    flex-wrap: wrap;
+    margin-right: 20px;
+}
+.hidden {
+    display: none;
+}
+
+
+.nameOfCategory, .spacer {
+    min-width: 125px;
+    max-width: 125px;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.nameOfCategory form {
+    display: inline-block;
+}
+.nameOfCategory input {
+    width: 70px;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: none;
+    text-align: center;
 }
 
 .nameOfCategory {
-    width: 125px;
-    padding: 0px 10px;
-    text-align: center;
+    /* order: 2; */
     border: 1px solid black;
 }
+ 
+section.tasks, .title {
+    display: flex;
+    /* width: 300px;  */
+    width: 310px;
+}
+
+/* .title {
+    order: 1;
+} */
 
 section.tasks {
-    display: flex;
+    order: 2;
     flex-wrap: wrap;
-    width: 300px;
-    padding: 5px;
+    padding: 10px;
     border: 1px solid black;
     border-left: none;
 }
 
-.task, .disabledTask {
+/* section.collapsed {
+    height: 60px;
+    overflow: hidden;
+    opacity: .8;
+} */
+
+.task, .disabledTask, .activeTask {
     /* display: block; */
     /* height: 120px; */
     width: 130px;
     /* border: 1px solid black; */
     margin: 10px;
     font-size: 12px;
+    background-color: white;
+    opacity: .85;
     /* overflow: hidden; */
     /* background-color: yellow; */
     /* background-color: yellowgreen; */
@@ -50,12 +110,20 @@ section.tasks {
     opacity: .5;
 }
 
+.activeTask {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
 .task .taskPrio {
     /* height: 10px; */
     font-size: 10px;
     text-indent: 5px;
     border: 1px solid black;
 }
+    .task .disabled {
+        background-color: grey;
+    }
     .task .low {
         background-color: green;
     }
