@@ -49,7 +49,7 @@ export class ChatService {
       }
       else {
         this.actionInProgress = false;
-        this.messageService.addMessage("error", "Channel name already exists")
+        this.messageService.addMessage("error", "There are already a channel by that name")
         return;
       }
     }

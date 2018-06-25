@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { AuthService } from '../../services/auth.service';
 import { TaskService } from '../../services/task.service';
 
 
-import { TaskCategory } from '../../interfaces/task';
+import { TaskCategory, Status } from '../../interfaces/task';
 
 @Component({
   selector: 'app-tasks',
@@ -17,6 +17,14 @@ export class TasksComponent implements OnInit {
 
   taskCategories: TaskCategory[];
 
+  // statuses: Status[] = new Array<Status>([{ index: 0, name: "not started" }, { index: 1, name: "in progress" }, { index: 2, name: "completed" }]);
+
+  // statusMap: Map<number, string> = new Map([ // not used
+  //   [ 0, "not started" ],
+  //   [ 1, "in progress" ],
+  //   [ 2, "completed" ]
+  // ]);
+
   prioText: string[] = ["disabled", "low", "medium", "high", "critical"];
 
   constructor(private afs: AngularFirestore,
@@ -25,11 +33,13 @@ export class TasksComponent implements OnInit {
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
-      this.user = user
-      let taskCatRef = this.afs.collection<TaskCategory>('users/' + user.uid + '/taskCategories/');
-      taskCatRef.valueChanges().subscribe(cats => {
-        this.taskCategories = cats;
-      });
+      this.user = user;
+      if(user) {
+        let taskCatRef: AngularFirestoreCollection<TaskCategory> = this.afs.collection<TaskCategory>('users/' + user.uid + '/taskCategories/');//, ref => ref.orderBy("collapsed"));
+        taskCatRef.valueChanges().subscribe(cats => {
+          this.taskCategories = cats;
+        });
+      }
     });
   }
 

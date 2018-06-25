@@ -1,45 +1,41 @@
-<ul>
-  <a routerLink="">
-    <li class="left menuitem">
-      Home
-    </li>
-  </a>
-  <li class="left menuitem">
+<div class="menuContainer">
+  <!-- <div class="left menuitem">
     <i class="fa fa-bars"></i>
-  </li>
+  </div> -->
+  <a routerLink="">
+    <div class="left menuitem">
+      Home
+    </div>
+  </a>
   <a routerLink="/tasks">
-    <li class="left menuitem">
+    <div class="left menuitem">
       Tasks
-    </li>
+    </div>
   </a>
   <a routerLink="/chat">
-    <li class="left menuitem">
+    <div class="left menuitem">
       Chat
-    </li>
+    </div>
   </a>
 
   <a (click)="authService.googleLogin()" name="login" *ngIf="!user">
-    <li class="right menuitem">
-      <!-- <i class="fa fa-user-circle"></i> -->
-      <!-- <label for="login">Log in</label> -->
+    <div class="right menuitem">
       Log in
-    </li>
+    </div>
   </a>
   <a (click)="authService.logout()" name="logout" *ngIf="user">
-    <li class="right menuitem">
+    <div class="right menuitem">
       Log out
-    </li>
+    </div>
   </a>
-  <li class="right iconitem" *ngIf="user">
+  <div class="right iconitem" *ngIf="user">
     <i class="fa fa-user-plus" title="admin" *ngIf="user.admin"></i>
     <i class="fa fa-user" title="registered user" *ngIf="!user.admin && !user.guest"></i>
     <i class="fa fa-user-o" title="guest" *ngIf="user.guest"></i>
     <label for="logout">{{ user.displayName }}</label>
-  </li>
+  </div>
 
-  <li class="right search">
+  <!-- <div class="right search">
     <input type="text" placeholder="Search">
-  </li>
-  <!-- class="googleLoginImg">
-      <img src="http://www.kthotelsgate.com/assets/theme_dark/images/sign-in-button.png"> -->
-</ul>
+  </div> -->
+</div>

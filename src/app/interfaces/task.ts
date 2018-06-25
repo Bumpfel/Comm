@@ -7,7 +7,7 @@ export interface TaskCategory {
 
 export interface Task {
     id: number;
-    name: string;
+    subject: string;
     description: string;
     priority: number;
     points: number;
@@ -15,6 +15,11 @@ export interface Task {
     startedAt?: string;
     editedAt?: string; //MultiDate;
     completedAt?: string;
+}
+
+export interface Status {
+    index: number;
+    name: string;
 }
 
 export interface MultiDate { // not working

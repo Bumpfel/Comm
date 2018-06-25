@@ -35,9 +35,6 @@ a {
     border: 1px solid black;
     background-color: white;
 }
-    .popup.mediumPrompt, .popup_fixed.popup.mediumPrompt {
-        width: 300px;
-    }
 
 .popup_fixed {
     position: fixed;
@@ -48,8 +45,18 @@ a {
     background-color: white;
 }
 
+.confirmationPrompt {
+    width: 300px;
+    top: 250px;
+    left: 175px;
+}
+
 .link {
     cursor: pointer;
+}
+
+.disabledIcon {
+    color: lightgrey;
 }
 
 /* Forms */
@@ -94,6 +101,7 @@ textarea {
     padding: 5px 3px;
     margin: 2px 0;
     font-family: Arial;
+    font-size: 13px;
 }
 
 select {

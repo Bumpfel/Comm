@@ -31,6 +31,10 @@ export class GlobalService {
     return firebase.firestore.FieldValue.serverTimestamp()
   }
 
+  printTime(time: string): string {
+    return time.slice(11, 16);
+  }
+
   getTimeStamp(): string {
     var date = new Date();
     var YY = date.getFullYear();

@@ -23,9 +23,9 @@ export class ChatLobbyComponent implements OnInit {
   chanRef;
 
   constructor(private afs: AngularFirestore,
-    private authService: AuthService,
-    private chatService: ChatService,
-    private messageService: MessageService) { }
+              private authService: AuthService,
+              private chatService: ChatService,
+              private messageService: MessageService) { }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => this.user = user);
