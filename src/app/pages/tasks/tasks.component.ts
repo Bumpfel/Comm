@@ -4,7 +4,8 @@ import { AuthService } from '../../services/auth.service';
 import { TaskService } from '../../services/task.service';
 
 
-import { TaskCategory, Status } from '../../interfaces/task';
+import { TaskCategory } from '../../interfaces/task';
+import { GlobalService } from '../../services/global.service';
 
 @Component({
   selector: 'app-tasks',
@@ -17,19 +18,12 @@ export class TasksComponent implements OnInit {
 
   taskCategories: TaskCategory[];
 
-  // statuses: Status[] = new Array<Status>([{ index: 0, name: "not started" }, { index: 1, name: "in progress" }, { index: 2, name: "completed" }]);
-
-  // statusMap: Map<number, string> = new Map([ // not used
-  //   [ 0, "not started" ],
-  //   [ 1, "in progress" ],
-  //   [ 2, "completed" ]
-  // ]);
-
   prioText: string[] = ["disabled", "low", "medium", "high", "critical"];
 
   constructor(private afs: AngularFirestore,
               private authService: AuthService,
-              private taskService: TaskService) { }
+              private taskService: TaskService,
+              private globalService: GlobalService) { }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {

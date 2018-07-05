@@ -33,19 +33,25 @@ export class AuthService {
 
   googleLogin(): void {
     const provider = new firebase.auth.GoogleAuthProvider();
-    this.afAuth.auth.signInWithPopup(provider).then(credentials => {
-      let userRef = this.afs.doc<User>('users/' + credentials.user.uid);
-      userRef.set({ 'uid': credentials.user.uid, 'email': credentials.user.email, 'displayName': credentials.user.displayName, 'chatName': this.getChatName(credentials.user.displayName), 'chatNameColour': this.globalService.getRandomColour("6789a"), guest: false }, { merge: true });
-    });
+    this.afAuth.auth.signInWithPopup(provider)
+      .then(credentials => {
+        let userRef = this.afs.doc<User>('users/' + credentials.user.uid);
+        userRef.set({ 'uid': credentials.user.uid, 'email': credentials.user.email, 'displayName': credentials.user.displayName, 'chatName': this.getChatName(credentials.user.displayName), 'chatNameColour': this.globalService.getRandomColour("6789a"), guest: false }, { merge: true });
+        this.messageService.addMessage("", "You are now logged in")
+      })
+    .catch(() => { });
   }
 
-  anonymousLogin(name: string): void {
+  guestLogin(name: string): void {
     if (name && name.trim().length > 0) {
       let userName = name.trim() + ' (guest)';
-      this.afAuth.auth.signInAnonymously().then(credentials => {
-        let userRef = this.afs.doc<User>('users/' + credentials.uid);
-        userRef.set({ 'uid': credentials.uid, 'email': '', 'displayName': userName, 'chatName': userName, 'chatNameColour': '#aaa', guest: true }, { merge: true });
-      });
+      this.afAuth.auth.signInAnonymously()
+        .then(credentials => {
+          let userRef = this.afs.doc<User>('users/' + credentials.uid);
+          userRef.set({ 'uid': credentials.uid, 'email': '', 'displayName': userName, 'chatName': userName, 'chatNameColour': '#aaa', guest: true }, { merge: true });
+          this.messageService.addMessage("", "You are now logged in")
+        })
+        .catch((error) => { console.log(error) });
     }
     else
       this.messageService.addMessage("error", "User name cannot be empty");
@@ -54,11 +60,12 @@ export class AuthService {
   logout(): void {
     this.afAuth.auth.signOut()
       .then(() => {
-        this.messageService.addMessage("", "You are now logged out");
         if (!this.user.email || this.user.email.length == 0) {
           this.afs.doc('users/' + this.user.uid).delete();
         }
-      });
+        this.messageService.addMessage("", "You are now logged out");
+      })
+      .catch((error) => { console.log(error) });
   }
 
   getChatName(displayName: string): string {

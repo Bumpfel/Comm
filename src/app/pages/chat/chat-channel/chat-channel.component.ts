@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { Observable } from 'rxjs/Observable';
 import { AuthService } from '../../../services/auth.service';
 import { GlobalService } from '../../../services/global.service';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../../services/message.service';
 import { ChatService } from '../../../services/chat.service';
+
+import { ChatChannel, ChatMsg } from '../../../interfaces/chat';
 
 @Component({
   selector: 'app-chat-channel',
@@ -49,6 +50,10 @@ export class ChatChannelComponent implements OnInit {
       });
     });
     this.authService.user$.subscribe(user => this.user = user);
+  }
+
+  ngAfterContentInit() {
+    setTimeout(() => this.scroll(), 1500);
   }
 
   scroll() {

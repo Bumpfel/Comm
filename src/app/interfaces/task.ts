@@ -2,7 +2,7 @@ export interface TaskCategory {
     name: string;
     // sortId: number;
     tasks: Task[];
-    collapsed?: boolean;
+    collapsed: boolean;
 }
 
 export interface Task {
@@ -17,10 +17,10 @@ export interface Task {
     completedAt?: string;
 }
 
-export interface Status {
-    index: number;
-    name: string;
-}
+// export interface Status {
+//     index: number;
+//     name: string;
+// }
 
 export interface MultiDate { // not working
     timestamp: string[];

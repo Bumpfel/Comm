@@ -35,11 +35,15 @@
 }
 
 .nameOfCategory input {
-    width: 70px;
+    width: 100px;
+    height: 16px;
     margin: 0;
     padding: 0;
     outline: 0;
     border: none;
+    
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
 }
 
@@ -126,6 +130,10 @@ section.tasks {
     overflow-y: auto;
     /* white-space: nowrap; */
     /* text-overflow: ellipsis; */
+}
+
+.finishedTask {
+    text-decoration: line-through;
 }
 
 ::-webkit-scrollbar {

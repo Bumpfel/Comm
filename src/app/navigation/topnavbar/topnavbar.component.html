@@ -1,41 +1,43 @@
 <div class="menuContainer">
-  <!-- <div class="left menuitem">
+
+  <a class="dropdown bars">
     <i class="fa fa-bars"></i>
-  </div> -->
-  <a routerLink="">
-    <div class="left menuitem">
-      Home
-    </div>
-  </a>
-  <a routerLink="/tasks">
-    <div class="left menuitem">
-      Tasks
-    </div>
-  </a>
-  <a routerLink="/chat">
-    <div class="left menuitem">
-      Chat
+    <div class="dropdown-content-left">
+      <a routerLink="">Home</a>
+      <a routerLink="/tasks">Tasks</a>
+      <a routerLink="/chat">Chat</a>
     </div>
   </a>
 
-  <a (click)="authService.googleLogin()" name="login" *ngIf="!user">
-    <div class="right menuitem">
-      Log in
-    </div>
-  </a>
-  <a (click)="authService.logout()" name="logout" *ngIf="user">
-    <div class="right menuitem">
-      Log out
-    </div>
-  </a>
-  <div class="right iconitem" *ngIf="user">
-    <i class="fa fa-user-plus" title="admin" *ngIf="user.admin"></i>
-    <i class="fa fa-user" title="registered user" *ngIf="!user.admin && !user.guest"></i>
-    <i class="fa fa-user-o" title="guest" *ngIf="user.guest"></i>
-    <label for="logout">{{ user.displayName }}</label>
+  <div class="left">
+    <a routerLink="">Home</a>
+    <a routerLink="/tasks">Tasks</a>
+    <a routerLink="/chat">Chat</a>
   </div>
 
+  <!-- <div style="margin-left: auto"></div> -->
+
+  <div class="right">
+    <a class="dropdown" *ngIf="!user">
+      Log in
+      <div class="dropdown-content-right">
+        <a (click)="authService.googleLogin()">Google login</a>
+      </div>
+    </a>
+
+    <a class="dropdown" *ngIf="user">
+      <i class="fa fa-user-plus" title="admin" *ngIf="user.admin"></i>
+      <i class="fa fa-user" title="registered user" *ngIf="!user.admin && !user.guest"></i>
+      <i class="fa fa-user-o" title="guest" *ngIf="user.guest"></i>
+      {{ user.displayName }}
+      <div class="dropdown-content-right">
+        <a (click)="authService.logout()">Log out</a>
+      </div>
+    </a>
+  </div>
+
+
   <!-- <div class="right search">
-    <input type="text" placeholder="Search">
+    <input type="text" placeholder="Search" disabled>
   </div> -->
 </div>

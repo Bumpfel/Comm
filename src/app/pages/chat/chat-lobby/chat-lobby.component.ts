@@ -5,6 +5,9 @@ import { AuthService } from '../../../services/auth.service';
 import { MessageService } from '../../../services/message.service';
 import { ChatService } from '../../../services/chat.service';
 
+import { ChatChannel, ChatMsg } from '../../../interfaces/chat';
+import { GlobalService } from '../../../services/global.service';
+
 @Component({
   selector: 'app-chat-lobby',
   templateUrl: './chat-lobby.component.html',
@@ -25,7 +28,8 @@ export class ChatLobbyComponent implements OnInit {
   constructor(private afs: AngularFirestore,
               private authService: AuthService,
               private chatService: ChatService,
-              private messageService: MessageService) { }
+              private messageService: MessageService,
+              private globalService: GlobalService) { }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => this.user = user);
@@ -35,25 +39,33 @@ export class ChatLobbyComponent implements OnInit {
     // this.chanRef.valueChanges().subscribe(channels => this.wantedChannels = channels); // temp
   }
 
-  copyWantedChannels() { // temp copy function
-    for (let channel of this.wantedChannels) {
-      let chanRef = this.afs.doc('chat/' + channel.id)
-        chanRef.set({ 'id': channel.id, 'description': channel.description, 'name': channel.name, 'name_key': channel.name_key, 'nextChatId': channel.nextChatId })
-        .then(() => {
-          let msgsRef = this.afs.collection<ChatMsg>('chatBkup/' + channel.id + '/msgs/');
-          msgsRef.valueChanges().subscribe(msgs => {
-            for (let msg of msgs) {
-              let msgRef = chanRef.collection('/msgs/').doc('' + msg.id);
-              msgRef.set({ 'id': msg.id, 'content': msg.content, 'sender': msg.sender, 'time': msg.time });
-              if(msg.userColour)
-                msgRef.update({ 'userColour': msg.userColour });
-              if(msg.senderId)
-                msgRef.update({ 'senderId': msg.senderId });
-            }
-          })
-         console.log(channel.name + " copy done"); 
-        });
-    }
+  getFocus(elementId) {
+    setTimeout(() => { document.getElementById(elementId).focus() }, 0);
   }
+
+  getFocus2(element) {
+    setTimeout(() => { element.focus() }, 0);
+  }
+
+  // copyWantedChannels() { // temp copy function
+  //   for (let channel of this.wantedChannels) {
+  //     let chanRef = this.afs.doc('chat/' + channel.id)
+  //       chanRef.set({ 'id': channel.id, 'description': channel.description, 'name': channel.name, 'name_key': channel.name_key, 'nextChatId': channel.nextChatId })
+  //       .then(() => {
+  //         let msgsRef = this.afs.collection<ChatMsg>('chatBkup/' + channel.id + '/msgs/');
+  //         msgsRef.valueChanges().subscribe(msgs => {
+  //           for (let msg of msgs) {
+  //             let msgRef = chanRef.collection('/msgs/').doc('' + msg.id);
+  //             msgRef.set({ 'id': msg.id, 'content': msg.content, 'sender': msg.sender, 'time': msg.time });
+  //             if(msg.userColour)
+  //               msgRef.update({ 'userColour': msg.userColour });
+  //             if(msg.senderId)
+  //               msgRef.update({ 'senderId': msg.senderId });
+  //           }
+  //         })
+  //        console.log(channel.name + " copy done"); 
+  //       });
+  //   }
+  // }
 
 }

@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { GlobalService } from './global.service';
 import { MessageService } from './message.service';
 
-import { Task, TaskCategory, MultiDate } from '../interfaces/task';
+import { Task, TaskCategory } from '../interfaces/task';
 
 @Injectable()
 export class TaskService {
@@ -23,6 +23,8 @@ export class TaskService {
   editTaskPopup: boolean;
   deleteTaskPopup: boolean;
   // changeCategory: boolean;
+
+  activeParentElement: HTMLElement;
 
   statusBlocks: string[] = ["not started", "in progress", "completed"];
 
@@ -63,7 +65,7 @@ export class TaskService {
         return -1;
       });
       newTasks.sort((a, b) => {
-        if(a.priority == 0 && a.priority < b.priority)
+        if (a.priority == 0 && a.priority < b.priority)
           return 1;
       });
     }
@@ -77,20 +79,45 @@ export class TaskService {
     return newTasks;
   }
 
+  activeTasksCounter(tasks: Task[]): string {
+    let nrNotStarted: number = 0, nrInProgress: number = 0, nrCompleted: number = 0;
+    for(let task of tasks) {
+      switch(task.status) {
+        case "not started": nrNotStarted ++; break;
+        case "in progress": nrInProgress ++; break;
+        case "completed": nrCompleted ++; break;
+      }
+    }
+    // return category.tasks.filter(task => task.status != "completed").length;
+    return nrNotStarted + "+" + nrInProgress + "+" + nrCompleted;
+  }
 
-  activeTasksCounter(category): number {
-    return category.tasks.filter(task => task.status != "completed").length;
+  getTasksInStatusBlock(tasks: Task[], status): number {
+    return tasks.filter(tasks => tasks.status == status).length;
+  }
+
+  setActionTimeOut(closePopups: boolean, time?: number) {
+    this.actionInProgress = true;
+    let defaultTime: number = 5000;
+
+    setTimeout(() => { 
+      if(this.actionInProgress)
+        this.messageService.addMessage("error", "Error: Action timed out");
+        this.actionInProgress = false;
+        closePopups ? this.closePopups() : '';
+    }, time > defaultTime ? time : defaultTime);
   }
 
   //--------------------------- Category functions -------------------------------//
 
   newCategory(name: string): void {
-    this.actionInProgress = true;
+    this.setActionTimeOut(false);
+    
     let trimmedName = name.trim();
     if (trimmedName.length > 0) {
       if (this.isUniqueCategoryName(trimmedName)) {
         let taskDocRef: AngularFirestoreDocument<TaskCategory> = this.afs.doc<TaskCategory>("users/" + this.user.uid + "/taskCategories/" + trimmedName.toLowerCase());
-        taskDocRef.set({ "name": trimmedName, "tasks": [] })
+        taskDocRef.set({ "name": trimmedName, "tasks": [], collapsed: false })
           .then(() => {
             this.closePopups();
             this.actionInProgress = false;
@@ -99,8 +126,7 @@ export class TaskService {
           .catch(() => {
             this.actionInProgress = false;
             this.messageService.addMessage("error", "Error creating category. Please try again later");
-          }
-          );
+          });
       }
       else {
         this.actionInProgress = false;
@@ -114,7 +140,8 @@ export class TaskService {
   }
 
   deleteCategory(category: TaskCategory): void {
-    this.actionInProgress = true;
+    this.setActionTimeOut(true);
+
     if (category.tasks.length > 0) { // Should not normally get here
       this.closePopups();
       this.actionInProgress = false;
@@ -130,61 +157,76 @@ export class TaskService {
         .catch(() => {
           this.actionInProgress = false;
           this.messageService.addMessage("error", "Error deleting category. Please try again later");
-        }
-        );
+        });
     }
   }
 
+  // Not used
   editCategory(category: TaskCategory, newName: string): void {
     this.pendingDeletion = category.name;
-    this.actionInProgress = true;
+    this.setActionTimeOut(false);
+
     let trimmedName = newName.trim();
     if (trimmedName.length > 0) {
-      if (this.isUniqueCategoryName(trimmedName)) {
-        this.categsRef.doc<TaskCategory>(newName.toLowerCase()).set({ 'name': newName, 'tasks': category.tasks })
-          .then(() => {
-            this.categsRef.doc(category.name.toLowerCase()).delete()//.then(() => console.log(category.name + " deleted"));
-              .catch((error) => {
-                console.log("Error deleting old category");
-              })
-            this.closePopups();
-            this.actionInProgress = false;
-            this.messageService.addMessage("update", "Category edited");
-          })
-          .catch(() => {
-            this.actionInProgress = false;
-            this.messageService.addMessage("error", "Error editing category. Please try again later")
+      if (category.name.toLowerCase() != trimmedName.toLowerCase()) {
+        if (this.isUniqueCategoryName(trimmedName)) {
+          this.categsRef.doc<TaskCategory>(trimmedName.toLowerCase()).set({ 'name': trimmedName, 'tasks': category.tasks, 'collapsed': category.collapsed })
+            .then(() => {
+              this.categsRef.doc(category.name.toLowerCase()).delete()//.then(() => console.log(category.name + " deleted"));
+                .catch((error) => {
+                  console.log("Error deleting old category");
+                })
+              this.closePopups();
+              this.actionInProgress = false;
+              this.pendingDeletion = undefined;
+              this.messageService.addMessage("update", "Category edited");
+            })
+            .catch(() => {
+              this.actionInProgress = false;
+              this.pendingDeletion = undefined;
+              this.messageService.addMessage("error", "Error editing category. Please try again later")
+            });
           }
-          );
+          else {
+            this.actionInProgress = false;
+            this.pendingDeletion = undefined;
+          this.messageService.addMessage("error", "There are already a category by that name");
+        }
       }
       else {
         this.actionInProgress = false;
-        this.messageService.addMessage("error", "There are already a category by that name");
+        this.pendingDeletion = undefined;
+        console.log("no changes was made");
       }
     }
     else {
       this.actionInProgress = false;
+      this.pendingDeletion = undefined;
       this.messageService.addMessage("error", "Category name mustn't be empty");
     }
   }
 
-  saveCollapsedCategoryState(name: string, collapsedState: boolean): void { // was used for only saving on ngOnDestroy (name made more sense). using the other one atm. 
+  saveCollapsedCategoryState(name: string, collapsedState: boolean): void { // was used for only saving on ngOnDestroy (function name made more sense). using the other one atm. 
     this.categsRef.doc<TaskCategory>(name.toLowerCase()).update({ 'collapsed': collapsedState });
   }
 
-  collapseCategory(name: string, collapsedState: boolean): void { // Duplicate
-    this.categsRef.doc<TaskCategory>(name.toLowerCase()).update({ 'collapsed': collapsedState });
+  collapseCategory(name: string, collapsed: boolean): void { // Duplicate
+    this.categsRef.doc<TaskCategory>(name.toLowerCase()).update({ 'collapsed': collapsed })
+      // .then(() => {
+      //   if (collapsed == false)
+      //     document.getElementById(name).scrollIntoView({ behavior: "smooth", block: "nearest" });
+      // });
   }
 
-  isUniqueCategoryName(name: string): boolean {
-    // this.taskCategories.find(category => category.name.toLowerCase() == name.toLowerCase());
-    return this.taskCategories.findIndex(category => category.name.toLowerCase() == name.toLowerCase()) == -1;
+  isUniqueCategoryName(newName: string): boolean {
+    return this.taskCategories.findIndex(category => category.name.toLowerCase() == newName.toLowerCase()) == -1;
   }
 
   //-------------------------------- Task functions ------------------------------//
 
   newTask(category: TaskCategory, newSubject: string, newDescription: string, newPoints: number, newPriority: number): void {
-    this.actionInProgress = true;
+    this.setActionTimeOut(false);
+        
     let trimmedSubject = newSubject.trim();
     if (trimmedSubject.length > 0) {
       let catRef: AngularFirestoreDocument<TaskCategory> = this.categsRef.doc<TaskCategory>(category.name.toLowerCase());
@@ -207,8 +249,7 @@ export class TaskService {
           this.actionInProgress = false;
           this.messageService.addMessage("error", "Error creating task. Please try again later");
           // console.log(error);
-        }
-        );
+        });
     }
     else {
       this.actionInProgress = false;
@@ -217,8 +258,8 @@ export class TaskService {
   }
 
   editTask(currentCategory: TaskCategory, destinationCategory: TaskCategory, taskId: number, newSubject: string, newDescription: string, newPoints: number, newPriority: number): void {
-    this.actionInProgress = true;
-
+    this.setActionTimeOut(false);
+    
     let trimmedSubject = newSubject.trim();
     if (trimmedSubject.length > 0) {
       let docRef: AngularFirestoreDocument<TaskCategory> = this.categsRef.doc(currentCategory.name.toLowerCase());
@@ -245,8 +286,7 @@ export class TaskService {
         .catch(() => {
           this.actionInProgress = false;
           this.messageService.addMessage("error", "Error saving details. Please try again later");
-        }
-      );
+        });
     }
     else {
       this.actionInProgress = false;
@@ -255,7 +295,8 @@ export class TaskService {
   }
 
   deleteTask(category: TaskCategory, taskId: number): void {
-    this.actionInProgress = true;
+    this.setActionTimeOut(true);
+    
     let docRef: AngularFirestoreDocument<TaskCategory> = this.categsRef.doc<TaskCategory>(category.name.toLowerCase());
     let taskIndex: number = category.tasks.findIndex(task => task.id == taskId);
     category.tasks.splice(taskIndex, 1); // bad practice to modify parameter, but cba to copy array
@@ -268,8 +309,7 @@ export class TaskService {
       .catch(() => {
         this.actionInProgress = false;
         this.messageService.addMessage("error", "Error deleting task. Please try again later");
-      }
-    );
+      });
   }
 
   changeTaskStatus(category: TaskCategory, taskId: number, change: number): void {
@@ -295,6 +335,69 @@ export class TaskService {
   }
 
 
+  //----------------------- Popup functions ----------------------------//
+
+  showNewCategoryPopup(el: HTMLElement): void {
+    this.closePopups();
+    this.newCategoryPopup = true;
+    this.activeParentElement = el;
+  }
+
+  showEditCategoryPopup(el: HTMLElement): void {
+    this.closePopups();
+    this.editCategoryPopup = true;
+    this.activeParentElement = el;
+  }
+
+  showDeleteCategoryPopup(el: HTMLElement): void {
+    this.closePopups();
+    this.deleteCategoryPopup = true;
+    this.activeParentElement = el;
+  }
+
+  showNewTaskPopup(el: HTMLElement): void {
+    this.closePopups();
+    this.newTaskPopup = true;
+    this.activeParentElement = el;
+  }
+
+  showEditTaskPopup(el: HTMLElement): void {
+    this.closePopups();
+    this.editTaskPopup = true;
+    this.activeParentElement = el;
+  }
+
+  showDeleteTaskPopup(): void {
+    // this.closePopups();
+    this.deleteTaskPopup = true;
+  }
+
+  closePopups(): void {
+    // console.log(this.activeParentElement.offsetTop + ", " + this.activeParentElement.offsetLeft)
+    // this.activeParentElement = undefined;
+    this.newCategoryPopup = undefined;
+    this.editCategoryPopup = undefined;
+    this.deleteCategoryPopup = undefined;
+    this.newTaskPopup = undefined;
+    this.editTaskPopup = undefined;
+    this.deleteTaskPopup = undefined;
+    // this.changeCategory = undefined;
+  }
+
+
+  //------------------------ Temporary fix functions ----------------------//
+
+  // fixDeleteNameFromTasks() {
+  //   for(let category of this.taskCategories) {
+  //     for(let task of category.tasks) {
+  //       delete task.name;
+  //     }
+
+  //     this.categsRef.doc<TaskCategory>(category.name.toLowerCase()).update({ tasks: category.tasks })
+  //       .then(() => this.messageService.addMessage("update", "task names has been removed from category " + category.name));
+  //   }
+  // }  
+
   // fixSubject(category: TaskCategory) {
   //     for(let task of category.tasks) {
   //       task.subject = task.name;
@@ -318,47 +421,5 @@ export class TaskService {
   //     docRef.update({ 'tasks': category.tasks })
   //       .then(() => this.messageService.addMessage("update", "prio fixed for task " + task.name));
   // }
-
-  //----------------------- Popup functions ----------------------------//
-
-  showNewCategoryPopup(): void {
-    this.closePopups();
-    this.newCategoryPopup = true;
-  }
-
-  showEditCategoryPopup(): void {
-    this.closePopups();
-    this.editCategoryPopup = true;
-  }
-
-  showDeleteCategoryPopup(): void {
-    // this.closePopups();
-    this.deleteCategoryPopup = true;
-  }
-
-  showNewTaskPopup(): void {
-    this.closePopups();
-    this.newTaskPopup = true;
-  }
-
-  showEditTaskPopup(): void {
-    this.closePopups();
-    this.editTaskPopup = true;
-  }
-
-  showDeleteTaskPopup(): void {
-    // this.closePopups();
-    this.deleteTaskPopup = true;
-  }
-
-  closePopups(): void {
-    this.newCategoryPopup = undefined;
-    this.editCategoryPopup = undefined;
-    this.deleteCategoryPopup = undefined;
-    this.newTaskPopup = undefined;
-    this.editTaskPopup = undefined;
-    this.deleteTaskPopup = undefined;
-    // this.changeCategory = undefined;
-  }
 
 }

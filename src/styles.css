@@ -1,13 +1,9 @@
-/* General stuff */
+/* ------------------- General stuff ------------------ */
+
 body {
     margin: 5px 0 0 0;
-    
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 13px;
-}
-
-.blur { /* not currently used. want to use it for popups */
-    filter: blur(3px);
 }
 
 a {
@@ -16,24 +12,37 @@ a {
     cursor: pointer;
 }
 
-.box { 
+.blurredContent {
+    filter: blur(2px);
+}
+
+.box {
     border: 1px solid black;
     width: 600px;
     padding: 10px;
     margin-top: 20px;
 }
 
-.popupContainer {
-    position: relative;
-    z-index: 1;
+.link {
+    cursor: pointer;
 }
-.popup {
-    position: absolute;
-    top: 25px;
-    left: 30px;
-    padding: 20px;
-    border: 1px solid black;
-    background-color: white;
+
+.disabledIcon {
+    color: lightgrey;
+    cursor: default;
+}
+
+
+/* ----------------- Popups ----------------- */
+
+.lightsoff {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.5;
 }
 
 .popup_fixed {
@@ -51,18 +60,31 @@ a {
     left: 175px;
 }
 
-.link {
-    cursor: pointer;
+/* not in use */
+.popupContainer {
+    position: relative;
+    z-index: 1;
 }
 
-.disabledIcon {
-    color: lightgrey;
+/* not in use. popup_fixed is used  */
+.popup {
+    position: absolute;
+    top: 100px;
+    left: 200px;
+    padding: 20px;
+    border: 1px solid black;
+    background-color: white;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
-/* Forms */
+
+/* -------------------- Forms -------------------- */
+
 fieldset {
     border: none;
 }
+
 button {
     height: 25px;
     margin: 2px 0;
@@ -79,11 +101,10 @@ input[type=text], input[type=number], input[type=password] {
     -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
-
 }
 
 input:focus, textarea:focus, select:focus {
-    outline: 1px solid grey;   
+    outline: 1px solid grey;
 }
 
 input[type=checkbox] {
@@ -109,9 +130,3 @@ select {
     height: 29px;
     margin: 2px 0;
 }
-
-
-
-
-
-

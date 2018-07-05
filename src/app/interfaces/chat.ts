@@ -1,13 +1,14 @@
-interface ChatChannel {
-  id: string;
+export interface ChatChannel {
+  id?: string;
   name: string;
-  name_key: string;
+  // name_key: string;
   nextChatId: number;
-  description?: string;
-  msgs?: ChatMsg[];
+  description: string;
+  protected: boolean;
+  // msgs?: ChatMsg[];
 }
 
-interface ChatMsg {
+export interface ChatMsg {
   id: number;
   content: string;
   time: any;

@@ -31,6 +31,7 @@ import { ChatService } from './services/chat.service';
 import { TasksComponent } from './pages/tasks/tasks.component';
 import { TaskService } from './services/task.service';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +49,7 @@ import { TaskService } from './services/task.service';
     AngularFireModule,
     AngularFirestoreModule,
     AngularFireAuthModule,
-    AppRoutingModule,
+    AppRoutingModule
   ],
   providers: [
     GlobalService,
