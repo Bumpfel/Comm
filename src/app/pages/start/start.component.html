@@ -1,0 +1,16 @@
+This is the home page
+
+<!-- TEST -->
+<div *ngIf="user && user.admin">
+  <h3>Test stuff</h3>
+  <div class="testContainer">
+    <h4>Messages</h4>
+    <button (click)="this.messageService.addMessage('add', 'addition message')">Test add</button>
+    <button (click)="this.messageService.addMessage('update', 'edit message')">Test update</button>
+    <button (click)="this.messageService.addMessage('delete', 'deleted message')">Test delete</button>
+    <br>
+    <br>
+    <button (click)="this.messageService.addMessage('error', 'error message')">Test error</button>
+    <button (click)="this.messageService.addMessage('', 'generic message')">Test generic</button>
+  </div>
+</div>

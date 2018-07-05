@@ -1,33 +1,7 @@
-<h1>Chat</h1>
-<div *ngIf="!senderName else showChat">
-
-  <a (click)="googleLogin()">Sign in with google</a>
-<form>
-  <input type="text" autofocus style="width:300px; font-size:14px" #senderName placeholder="Choose a chat name">
-  <input type="submit" value="Use" (click)="setName(senderName.value)">
-</form>
+<app-topnavbar></app-topnavbar>
+<div class="main">
+    <router-outlet></router-outlet>
 </div>
-<ng-template #showChat>
-  <div class="chatContainer">
-    <div class="msg" *ngFor="let msg of chatMsgs | async">
-      <!-- <span *ngIf="" -->
-      {{ printTime(msg.time) }}
-      <strong>{{ msg.sender }}:</strong> {{ msg.content }}
-      <!-- <div class="delete">
-        <a (click)="deleteItem(msg.id)">
-          <i class="fa fa-trash-o"></i>
-        </a>
-      </div> -->
-    </div>
-    <div id="bottom"></div>
-  </div>
-  <form>
-    <input type="text" class="newMsg" autofocus required [(ngModel)]="newMsg" name="newMsg">
-    <br>
-    <input type="submit" (click)="addMsg()" value="Send">
-    <br>
-    <br>
-    <input type="button" (click)="test()" value="Test me">
-  </form>
-  {{ scroll() }}
-</ng-template>
+<div class="messages">
+    <app-messages></app-messages>
+</div>

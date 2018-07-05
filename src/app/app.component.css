@@ -1,26 +1,10 @@
-.chatContainer {
-    height: 400px;
-    width: 1000px; 
-    border: 1px solid grey;
-    overflow: auto;
+.main { /* Padder for router outlet */
+    padding: 20px 30px 20px 5%;
 }
 
-.msg:hover {
-    background-color: #f5f5f5;
-}
-
-.msg:hover .delete {
-    display: inline;
-}
-
-.delete {
-    display: none;
-    float: right;
-    margin-right: 10px;
-}
-
-.newMsg {
-    width:998px; 
-    margin:5px 0; 
-    font-size:16px;
+.messages {
+    /* max-height: 50%; */
+    position: fixed;
+    bottom: 0;
+    left: 40%;
 }

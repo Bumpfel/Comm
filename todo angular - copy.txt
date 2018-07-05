@@ -1,0 +1,91 @@
+GENERAL
+-invalid fields: felmeddelande/markering
+-(kan man använda new Date() istället för getTimeStamp()?)
+-använda namn som id istället för uid om namnet ska vara unikt. t.ex. för chatkanal och taskCategory
+
+TOPNAVBAR
+-dropdown för log out/log in
+
+POPUP SYSTEM
+-positionering ska vara relativ till knappen som aktiverar popupen
+-blur/darkening of screen när en popup är aktiv
+-styling
+
+
+MESSAGE SYSTEM
+-slide from bottom
+-('x'-button to instantly remove a message)
+
+
+LOGIN
+-possibility to sign in anonymously from navbar
+
+
+CHAT
+-ska kunna chatta med användare, som facebook. channel-autocreation
+-möjlighet till att bjuda in personer till gruppchat
+
+>chatlobby
+ -edit channel name
+ -general styling
+ -(autofocus new channel input)
+
+>chatchannel
+ -intial scroll
+ -meddelande från samma användare ska grupperas. användarnamn ska bara visas om användaren inte sände senaste meddelandet
+ -general styling
+ -alla meddelandena ska inte läsas in om det blir väldigt många.
+ -man ska se när nån annan skriver
+ -man ska se vilka som är med i kanalen
+ -@mentions? 
+
+#NEXT UP
+-Tasks
+>chatlobby 
+ -edit channel name
+
+
+#FIXED 
+-message system.
+-egen confirm-popup
+-förbättre messageSystem. lägg till ikoner. förenkla kod. gul färg för borttagningar.
+-ska kunna trycka enter när man skapar kanal (<form>?)
+-fixa bugg med signout. sign in-rutan dyker upp direkt när man loggat ut
+-lägg till meddelande för alla errors och notifikationer
+-new channel as popup
+12 juni
+-chatService använder sig inte av checkName-funktionen
+-en popup ska inte stängas om det uppstår felmeddelande
+-när man tar bort en kanal, tas inte hela dokumentet bort i databasen om dokument innehåller chatmeddelanden
+-anonymous login
+-anonymous users should be deleted on logout
+13 juni
+-avveckla popupcomponent och service för att de ställer till oreda
+-bug: error msg on send form (hitting enter on create channel)
+-bug: klickar man snabbt kan man skapa flera kanaler med samma namn innan rutan stängs ner
+-description for chat channel. optional?
+-styling: slide-in-out effect.
+14 juni
+-positionering blir fel om man scrollar ner på en sida. meddelande syns inte om det innehåller flera rader
+-an infinite loop created too many chat channels and I made a backup function to save the Test and General channels
+-ska inte gå att skapa kanal med existerande namn
+-flytta funktioner till chat.service
+-started with tasks
+
+TANKAR
+To-do list. skulle kunna ha denna listan som en todo list istället för simpla notepad. lite som redmine
+-struktur
+: uppgifter kan bara ligga i en kategori
+: pages/tasks
+: component name: "Tasks"
+: category > tasks
+
+-funktioner
+: kunna lägga till kategorier
+: kunna lägga till uppgifter
+: kunna markera uppgifter efter svårighetsgrad/tidsåtgång, typ scrum-poäng
+: kunna markera prioritet (färgmärkning)
+: kunna markera uppgift som påbörjade
+: kunna markera uppgifter som avklarade. lista som sorteras efter datum.
+(: kunna märka blockerande uppgifter)
+(: kunna ändra sortering)

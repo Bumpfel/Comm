@@ -1,0 +1,49 @@
+<h2>Available chat channels</h2>
+<!-- Create channel -->
+<div *ngIf="user && user.admin">
+  <button (click)="chatService.showCreateChannnelDialog = true" [disabled]="chatService.showCreateChannnelDialog">Create new chat channel</button>
+  <!-- Create channel dialogue -->
+  <div class="popupContainer" *ngIf="chatService.showCreateChannnelDialog">
+    <div class="popup">
+      <strong>Create new chat channel</strong>
+      <form (ngSubmit)="chatService.newChannel(channelName.value, channelDescription.value)">
+        <input type="text" placeholder="Name" autofocus autocomplete="off" #channelName name="cn" [disabled]="chatService.actionInProgress">
+        <br>
+        <input type="text" placeholder="Description" autocomplete="off" #channelDescription name="cd" [disabled]="chatService.actionInProgress">
+        <br>
+        <button type="submit" [disabled]="chatService.actionInProgress">
+          Create
+          <i class="fa fa-spinner fa-spin" *ngIf="chatService.actionInProgress"></i>
+        </button>
+        <button type="reset" (click)="chatService.showCreateChannnelDialog = undefined" [disabled]="chatService.actionInProgress">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="channelContainer">
+  <!-- Delete channel dialogue -->
+  <div class="popupContainer" *ngIf="chatService.showDeleteConfirmation">
+    <div class="popup">
+      This action cannot be undone!
+      <br> Are you sure you want to delete the channel '{{ deleteName }}'?
+      <br>
+      <button (click)="chatService.deleteChannel(deleteId)">Yes</button>
+      <button (click)="chatService.showDeleteConfirmation = undefined">No</button>
+    </div>
+  </div>
+  <!-- Channels -->
+  <div class="channel" *ngFor="let chatChannel of chatService.allChannels">
+    <div class="name">
+      <a [routerLink]="'/chat/' + chatChannel.id">{{ chatChannel.name }}</a>
+    </div>
+    <div class="description">
+      {{ chatChannel.description }}
+    </div>
+    <div class="buttons" *ngIf="user && user.admin && chatChannel.id != 'ks7vyEz0rVGXv8EVRRCY' &&  chatChannel.id != '8gxTy0q6ZzMu5yXA2Fam'">
+      <a (click)="chatService.showDeleteConfirmation = true; deleteId = chatChannel.id; deleteName = chatChannel.name">
+        <i class="fa fa-trash-o"></i>
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,178 @@
+.header {
+    position: absolute;
+    margin-top: -25px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.category {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.collapsedCategory {
+    display: inline-flex;
+    flex-wrap: wrap;
+    margin-right: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.nameOfCategory {
+    min-width: 125px;
+    max-width: 125px;
+    padding: 0 10px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.nameOfCategory form {
+    display: inline-block;
+}
+
+.nameOfCategory input {
+    width: 70px;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: none;
+    text-align: center;
+}
+
+section.tasks {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    /* min-width: 150px;
+    max-width: 300px;  */
+    width: 317px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid black;
+    border-left: none;
+}
+
+/* section.collapsed {
+    height: 60px;
+    overflow: hidden;
+    opacity: .8;
+} */
+
+.task, .disabledTask, .activeTask {
+    width: 130px;
+    margin: 10px;
+    font-size: 12px;
+    background-color: white;
+    opacity: .85;
+}
+
+.activeTask {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+.disabledTask {
+    opacity: .5;
+}
+
+.task .taskPrio {
+    height: 10px;
+    /* font-size: 10px; */
+    /* text-indent: 5px; */
+    border: 1px solid black;
+}
+
+.task .disabled {
+    background-color: grey;
+    /* filter: grayscale(100%); */
+}
+
+.task .low {
+    background-color: green;
+}
+
+.task .medium {
+    background-color: yellowgreen;
+}
+
+.task .high {
+    background-color: gold;
+}
+
+.task .critical {
+    background-color: orangered;
+}
+
+.task .main {
+    float: left;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.task .taskSubject {
+    float: left;
+    width: 77px;
+    min-height: 20px;
+    max-height: 105px;
+    padding: 8px 10px;
+    border-right: 1px solid black;
+    /* background-color: lightgrey; */
+    word-wrap: break-word;
+    overflow-y: auto;
+    /* white-space: nowrap; */
+    /* text-overflow: ellipsis; */
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background-color: #e5e5e5;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #b5b5b5;
+}
+
+
+.task .taskPoints {
+    display: flex;
+    width: 10px;
+    padding: 10px 10px;
+}
+
+.task .taskButtons {
+    display: flex;
+    text-indent: 3px;
+    padding: 2px 0;
+    font-size: 12px;
+    border: 1px solid black;
+}
+
+.taskButtons span {
+    width: 33%;
+}
+
+/* .taskButtons:first-child {
+    text-align: left;
+}
+.taskButtons:nth-child(2) {
+    text-align: center;
+}
+.taskButtons:last-child {
+    text-align: right;
+}  */
+
+button.addTask {
+    margin: 10px;
+    /* margin-left: 52px; */
+    /* margin-right: 53px; */
+    /* margin-left: 15px; */
+    font-size: 20px;
+    width: 45px;
+    height: 45px;
+}

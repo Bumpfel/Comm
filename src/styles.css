@@ -1,1 +1,117 @@
-/* You can add global styles to this file, and also import other style files */
+/* General stuff */
+body {
+    margin: 5px 0 0 0;
+    
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 13px;
+}
+
+.blur { /* not currently used. want to use it for popups */
+    filter: blur(3px);
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}
+
+.box { 
+    border: 1px solid black;
+    width: 600px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.popupContainer {
+    position: relative;
+    z-index: 1;
+}
+.popup {
+    position: absolute;
+    top: 25px;
+    left: 30px;
+    padding: 20px;
+    border: 1px solid black;
+    background-color: white;
+}
+
+.popup_fixed {
+    position: fixed;
+    top: 100px;
+    left: 200px;
+    padding: 20px;
+    border: 1px solid black;
+    background-color: white;
+}
+
+.confirmationPrompt {
+    width: 300px;
+    top: 250px;
+    left: 175px;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.disabledIcon {
+    color: lightgrey;
+}
+
+/* Forms */
+fieldset {
+    border: none;
+}
+button {
+    height: 25px;
+    margin: 2px 0;
+}
+
+input, select {
+    height: 25px;
+}
+
+input[type=text], input[type=number], input[type=password] {
+    width: 214px;
+    padding: 0 3px;
+    margin: 2px 0;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: 1px solid grey;   
+}
+
+input[type=checkbox] {
+    width: 20px;
+}
+
+input[type=checkbox]:focus {
+    outline: 0;
+}
+
+textarea {
+    width: 216px;
+    height: 200px;
+    resize: none;
+    padding: 5px 3px;
+    margin: 2px 0;
+    font-family: Arial;
+    font-size: 13px;
+}
+
+select {
+    width: 224px;
+    height: 29px;
+    margin: 2px 0;
+}
+
+
+
+
+
+
