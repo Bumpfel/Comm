@@ -123,7 +123,7 @@ export class TaskService {
     
     let trimmedName = name.trim();
     if (trimmedName.length > 0) {
-      if (this.isUniqueCategoryName(trimmedName)) {
+      if (this.isUniqueCategoryName(null, trimmedName)) {
         let taskDocRef: AngularFirestoreDocument<TaskCategory> = this.afs.doc<TaskCategory>("users/" + this.user.uid + "/taskCategories/" + trimmedName.toLowerCase());
         taskDocRef.set({ "name": trimmedName, "tasks": [], collapsed: false })
           .then(() => {
@@ -176,14 +176,16 @@ export class TaskService {
 
     let trimmedName = newName.trim();
     if (trimmedName.length > 0) {
-      if (category.name.toLowerCase() != trimmedName.toLowerCase()) {
-        if (this.isUniqueCategoryName(trimmedName)) {
+      if (category.name != trimmedName) {
+        if (this.isUniqueCategoryName(category.name, trimmedName)) {
           this.categsRef.doc<TaskCategory>(trimmedName.toLowerCase()).set({ 'name': trimmedName, 'tasks': category.tasks, 'collapsed': category.collapsed })
             .then(() => {
-              this.categsRef.doc(category.name.toLowerCase()).delete()//.then(() => console.log(category.name + " deleted"));
+              if(category.name.toLowerCase() != trimmedName.toLowerCase()) {
+                this.categsRef.doc(category.name.toLowerCase()).delete()//.then(() => console.log(category.name + " deleted"));
                 .catch((error) => {
                   console.log("Error deleting old category");
                 })
+              }
               this.closePopups();
               this.actionInProgress = false;
               this.pendingDeletion = undefined;
@@ -226,8 +228,8 @@ export class TaskService {
       // });
   }
 
-  isUniqueCategoryName(newName: string): boolean {
-    return this.taskCategories.findIndex(category => category.name.toLowerCase() == newName.toLowerCase()) == -1;
+  isUniqueCategoryName(oldName: string, newName: string): boolean {
+    return this.taskCategories.findIndex(category => category.name.toLowerCase() == newName.toLowerCase() && category.name.toLowerCase() != oldName.toLowerCase()) == -1;
   }
 
   //-------------------------------- Task functions ------------------------------//
