@@ -30,6 +30,7 @@ import { MessageService } from './services/message.service';
 import { ChatService } from './services/chat.service';
 import { TasksComponent } from './pages/tasks/tasks.component';
 import { TaskService } from './services/task.service';
+import { TestComponent } from './pages/test/test.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { TaskService } from './services/task.service';
     StartComponent,
     TopnavbarComponent,
     MessagesComponent,
-    TasksComponent
+    TasksComponent,
+    TestComponent
   ],
   imports: [
     BrowserModule,

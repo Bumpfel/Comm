@@ -28,6 +28,11 @@ export class ChatService {
     this.allChannels$ = this.afs.collection<ChatChannel>('chat/').valueChanges();
     this.allChannels$.subscribe(channels => this.allChannels = channels);
     this.authService.user$.subscribe(user => this.user = user)
+
+    window.onkeydown = (event) => {
+      if (event.keyCode == 27 && !this.actionInProgress) /// esc key
+        this.closePopups();
+    }
   }
 
   setActionTimeOut(closePopups: boolean, time?: number) {
@@ -138,14 +143,31 @@ export class ChatService {
     this.createChannelPopup = undefined;
   }
 
-  showCreateChannelPopup(): void {
+  showCreateChannelPopup(el: HTMLElement): void {
     this.closePopups();
+    this.globalService.setFocus('channelName');
     this.createChannelPopup = true;
+    
+    console.log(el.offsetTop + ", " + el.offsetLeft);
+    setTimeout(() => {
+      let popup = document.getElementById("createChannelPopup");
+      // popup.style.display = "block";
+      popup.style.top = el.offsetTop + "px";
+      popup.style.left = el.offsetLeft + "px";
+    }, 0);
   }
 
-  showDeleteChannelPopup(): void {
+  showDeleteChannelPopup(el: HTMLElement): void {
     this.closePopups();
-    this.deleteChannelPopup = true; 
+    this.deleteChannelPopup = true;
+    
+    console.log(el.offsetTop + ", " + el.offsetLeft);
+    setTimeout(() => {
+      let popup = document.getElementById("deleteChannelPopup");
+      // popup.style.display = "block";
+      popup.style.top = el.offsetTop + 160 +"px";
+      popup.style.left = el.offsetLeft + 620 + "px";
+    }, 0);
   }
 
 

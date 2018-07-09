@@ -5,6 +5,7 @@ import { ChatLobbyComponent } from './pages/chat/chat-lobby/chat-lobby.component
 import { ChatChannelComponent } from './pages/chat/chat-channel/chat-channel.component';
 import { StartComponent } from './pages/start/start.component';
 import { TasksComponent } from './pages/tasks/tasks.component';
+import { TestComponent } from './pages/test/test.component';
 
 const routes : Routes = [
     {
@@ -27,6 +28,10 @@ const routes : Routes = [
     {
       path:"tasks",
       component:TasksComponent
+    },
+    {
+      path:"test",
+      component:TestComponent
     },
 ];
 @NgModule({

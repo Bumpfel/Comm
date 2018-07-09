@@ -2,12 +2,12 @@
 <div *ngIf="user && !user.guest else showLogin" 
 [class.blurredContent]="taskService.newCategoryPopup || taskService.editCategoryPopup || taskService.deleteCategoryPopup || taskService.newTaskPopup || taskService.editTaskPopup">
   <!-- <fieldset [disabled]="taskService.actionInProgress"> -->
-    <button #el (click)="taskService.showNewCategoryPopup(el); globalService.setFocus('newCategoryName')" [disabled]="taskService.newCategoryPopup">New category</button>
+    <button #el (click)="taskService.showNewCategoryPopup(el)" [disabled]="taskService.newCategoryPopup">New category</button>
     <br>
     <br>
 
     <!-- Categories -->
-    <div class="category" *ngFor="let category of taskCategories" [id]="category.name" [class.collapsedCategory]="category.collapsed"
+    <div class="category" #thisCat *ngFor="let category of taskCategories" [id]="category.name" [class.collapsedCategory]="category.collapsed"
       [class.hidden]="taskService.pendingDeletion == category.name">
       <div class="nameOfCategory">
         <h4>
@@ -24,7 +24,7 @@
             <i class="fa fa-minus link" (click)="category.collapsed = true; taskService.collapseCategory(category.name, true)" title="Collapse category"
               *ngIf="!category.collapsed else showCollapsedName"></i>
             <br>
-            <i class="fa fa-trash link" #el (click)="taskService.showDeleteCategoryPopup(el); activeCategory = category" title="Delete this category" *ngIf="category.tasks.length == 0"></i>
+            <i class="fa fa-trash link" (click)="taskService.showDeleteCategoryPopup(thisCat); activeCategory = category" title="Delete this category" *ngIf="category.tasks.length == 0"></i>
             <i class="fa fa-trash disabledIcon" title="Cannot delete this category as it contains tasks" *ngIf="category.tasks.length > 0"></i>
           </span>
           <!-- Collapsed category -->
@@ -39,22 +39,27 @@
       <ng-container *ngFor="let status of taskService.statusBlocks">
         <section class="tasks" *ngIf="!category.collapsed">
           <!-- New Placeholder Task -->
-          <!-- <div class="task" *ngIf="status == 'not started'">
+          <div class="task placeholder" #placeholder *ngIf="status == 'not started'">
             <div class="taskPrio">&nbsp;</div>
             <div class="main">
               <div class="taskSubject">
 
+                <button class="addTask2" (click)="taskService.showNewTaskPopup(placeholder); activeCategory = category" [disabled]="taskService.newTaskPopup && activeCategory == category || taskService.actionInProgress"
+                *ngIf="status == 'not started'">
+                +
+              </button>
+                
             </div>
             <div class="taskPoints"></div>
             </div>
             <div class="taskButtons">&nbsp;</div>
-          </div> -->
+          </div>
 
           <span class="header">
             {{ status }} ({{ taskService.getTasksInStatusBlock(category.tasks, status) }})
           </span>
           
-          <div class="task" *ngFor="let task of taskService.filterByStatusAndSort(category.tasks, status)" 
+          <div class="task" #thisTask *ngFor="let task of taskService.filterByStatusAndSort(category.tasks, status)" 
           [class.disabledTask]="task.priority == 0">
           <!-- [class.activeTask]="(taskService.editTaskPopup || taskService.deleteTaskPopup) && activeTask == task" -->
             <div class="taskPrio {{ prioText[task.priority] }}" title="Task priority: {{ prioText[task.priority] }}">
@@ -76,7 +81,7 @@
                   [title]="task.status == 'in progress' && task.priority > 0 ? 'Abort task' : (task.status == 'completed' ? 'Restart task' : '')"></i>
               </span>
               <span style="text-align: center">
-                <i class="fa fa-edit link" #el (click)="taskService.showEditTaskPopup(el); globalService.setFocus('editTaskSubject'); activeCategory = category; destinationCategory = category; activeTask = task"></i>
+                <i class="fa fa-edit link" (click)="taskService.showEditTaskPopup(thisTask); globalService.setFocus('editTaskSubject'); activeCategory = category; destinationCategory = category; activeTask = task"></i>
               </span>
               <span style="text-align: right">
                 <i class="fa fa-forward" [class.link]="task.status != 'completed' && task.priority > 0" [class.disabledIcon]="status == 'completed' || task.priority == 0"
@@ -86,10 +91,6 @@
             </div>
           </div>
 
-          <button class="addTask" #el (click)="taskService.showNewTaskPopup(el); globalService.setFocus('newTaskSubject'); activeCategory = category" [disabled]="taskService.newTaskPopup && activeCategory == category || taskService.actionInProgress"
-            *ngIf="status == 'not started'">
-            +
-          </button>
         </section>
       </ng-container>
 
@@ -97,11 +98,13 @@
   <!-- </fieldset> -->
 </div>
 
-<div class="lightsoff" (click)="taskService.actionInProgress ? '' : taskService.closePopups()" 
+<!-- Lights off Element -->
+<div class="lightsoff" 
 *ngIf="taskService.newCategoryPopup || taskService.editCategoryPopup || taskService.deleteCategoryPopup || taskService.newTaskPopup || taskService.editTaskPopup"></div>
+<!-- (click)="taskService.actionInProgress ? '' : taskService.closePopups()"  -->
 
 <!-- New Category Popup -->
-<div class="popup" [style.top]="taskService.activeParentElement.offsetTop + 100 + 'px'" [style.left]="taskService.activeParentElement.offsetLeft + 50 + 'px'" *ngIf="taskService.newCategoryPopup">
+<div class="popup" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.newCategoryPopup">
   <!-- {{ name.focus() }} -->
   <h4>New category</h4>
   <form (ngSubmit)="taskService.newCategory(name.value)">
@@ -117,7 +120,7 @@
 
 
 <!-- Edit Category Popup ----------Not used--------- -->
-<div class="popup_fixed" *ngIf="taskService.editCategoryPopup">
+<div class="popup" *ngIf="taskService.editCategoryPopup">
   <!-- {{ name.focus() }} -->
   <h4>Edit category</h4>
   <form (ngSubmit)="taskService.editCategory(activeCategory, name.value)">
@@ -136,7 +139,7 @@
 
 
 <!-- Delete Category Confirmation Popup -->
-<div class="popup confirmationPrompt" [style.top]="taskService.activeParentElement.offsetTop - 30 + 'px'" [style.left]="taskService.activeParentElement.offsetLeft + 75 + 'px'" *ngIf="taskService.deleteCategoryPopup">
+<div class="popup confirmationPrompt" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.deleteCategoryPopup">
   This action cannot be undone! Are you sure you want to delete '{{ activeCategory.name }}'?
   <br>
   <button (click)="taskService.deleteCategory(activeCategory)" [disabled]="taskService.actionInProgress">
@@ -148,7 +151,7 @@
 
 
 <!-- New Task Popup -->
-<div class="popup" [style.top]="taskService.activeParentElement.offsetTop - 100 + 'px'" [style.left]="taskService.activeParentElement.offsetLeft + 150 + 'px'" *ngIf="taskService.newTaskPopup">
+<div class="popup" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.newTaskPopup">
   <!-- {{ subject.focus() }} -->
   <h4>New task in {{ activeCategory.name }}</h4>
   <form (ngSubmit)="taskService.newTask(activeCategory, subject.value, description.value, points.value, priority.value)">
@@ -186,7 +189,7 @@
 
 
 <!-- Edit Task Popup -->
-<div class="popup" [style.top]="taskService.activeParentElement.offsetTop - 250 + 'px'" [style.left]="taskService.activeParentElement.offsetLeft + 90 + 'px'" *ngIf="taskService.editTaskPopup">
+<div class="popup" #popup (mousedown)="!taskService.deleteTaskPopup ? globalService.dragPopup(popup, $event) : ''" [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.editTaskPopup">
   <!-- {{ subject.focus() }} -->
   <h4>Edit task</h4>
   <form (ngSubmit)="taskService.editTask(activeCategory, destinationCategory, activeTask.id, subject.value, description.value, points.value, priority.value)">
@@ -197,7 +200,7 @@
       <br>
       <input type="text" placeholder="Subject" autocomplete="off" [value]="activeTask.subject" id="editTaskSubject" #subject name="s">
       <br>
-      <textarea placeholder="Description" autocomplete="off" [value]="activeTask.description" #description name="d"></textarea>
+      <textarea placeholder="Description" style="resize: vertical" autocomplete="off" [value]="activeTask.description" #description name="d"></textarea>
       <br>
       <select [value]="activeTask.points" #points name="po">
         <option value="1">Points: 1</option>
@@ -223,14 +226,14 @@
         <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress && !taskService.deleteTaskPopup"></i>
       </button>
       <button type="reset" (click)="taskService.closePopups()">Cancel</button>
-      <button type="button" (click)="taskService.showDeleteTaskPopup()">Delete</button>
+      <button type="button" (click)="taskService.showDeleteTaskPopup(popup)">Delete</button>
     </fieldset>
   </form>
 </div>
 
 
 <!-- Delete Task Confirmation Popup -->
-<div class="popup confirmationPrompt" [style.top]="taskService.activeParentElement.offsetTop - 50 + 'px'" [style.left]="taskService.activeParentElement.offsetLeft + 75 + 'px'" *ngIf="taskService.deleteTaskPopup">
+<div class="popup confirmationPrompt" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.promptTop + 'px'" [style.left]="taskService.promptLeft + 'px'" *ngIf="taskService.deleteTaskPopup">
   This action cannot be undone! Are you sure you want to delete the task?
   <br>
   <button (click)="taskService.deleteTask(activeCategory, activeTask.id)" [disabled]="taskService.actionInProgress">

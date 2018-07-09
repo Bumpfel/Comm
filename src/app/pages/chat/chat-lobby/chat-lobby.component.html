@@ -1,11 +1,11 @@
 <title>Chat lobby - Comm</title>
 <div [class.blurredContent]="chatService.createChannelPopup || chatService.deleteChannelPopup">
   <h2>Available chat channels</h2>
-  <button (click)="chatService.showCreateChannelPopup(); globalService.setFocus('channelName'); parentElement = createChannelButton" #createChannelButton *ngIf="user && user.admin" [disabled]="chatService.createChannelPopup">Create new chat channel</button>
+  <button #el (click)="chatService.showCreateChannelPopup(el)" *ngIf="user && user.admin" [disabled]="chatService.createChannelPopup">Create new chat channel</button>
 
   <!-- Channels -->
   <div class="channelContainer">
-    <div class="channel" *ngFor="let chatChannel of chatService.allChannels">
+    <div class="channel" #channel *ngFor="let chatChannel of chatService.allChannels">
       <div class="name">
         <a [routerLink]="'/chat/' + chatChannel.name.toLowerCase()">{{ chatChannel.name }}</a>
       </div>
@@ -13,19 +13,20 @@
         {{ chatChannel.description }}
       </div>
       <div class="buttons" *ngIf="user && user.admin && !chatChannel.protected">
-        <a (click)="chatService.showDeleteChannelPopup(); activeChannel = chatChannel">
-          <i class="fa fa-trash-o"></i>
-        </a>
+        <i class="fa fa-trash-o link" (click)="chatService.showDeleteChannelPopup(channel); activeChannel = chatChannel"></i>
       </div>
     </div>
   </div>
 </div>
 
-<div class="lightsoff" (click)="chatService.actionInProgress ? '' : chatService.closePopups()" *ngIf="chatService.createChannelPopup || chatService.deleteChannelPopup"></div>
+<!-- Lights off Element -->
+<div class="lightsoff"  *ngIf="chatService.createChannelPopup || chatService.deleteChannelPopup"></div>
+<!-- (click)="chatService.actionInProgress ? '' : chatService.closePopups()" -->
 
 <!-- Create Channel Popup -->
-<div class="popup" *ngIf="chatService.createChannelPopup" [style.top]="parentElement.offsetTop + 100 + 'px'" [style.left]="parentElement.offsetLeft + 50 + 'px'">
-  <strong>Create new chat channel</strong>
+<div class="popup" #popup id="createChannelPopup" (mousedown)="globalService.dragPopup(popup, $event)" *ngIf="chatService.createChannelPopup">
+ <!-- [style.top]="chatService.popupTop + 'px'" [style.left]="chatService.popupLeft + 'px'"> -->
+  <h4>Create new chat channel</h4>
   <form (ngSubmit)="chatService.newChannel(channelName.value, channelDescription.value)">
     <fieldset [disabled]="chatService.actionInProgress">
       <input type="text" placeholder="Name" autocomplete="off" id="channelName" #channelName name="cn">
@@ -43,7 +44,7 @@
 
 
 <!-- Delete Channel Confirmation -->
-<div class="popup_fixed confirmationPrompt" *ngIf="chatService.deleteChannelPopup">
+<div class="popup confirmationPrompt" id="deleteChannelPopup" *ngIf="chatService.deleteChannelPopup">
   This action cannot be undone!
   <br> Are you sure you want to delete the channel '{{ activeChannel.name }}'?
   <br>

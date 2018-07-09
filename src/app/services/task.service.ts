@@ -24,7 +24,10 @@ export class TaskService {
   deleteTaskPopup: boolean;
   // changeCategory: boolean;
 
-  activeParentElement: HTMLElement;
+  popupTop: number;
+  popupLeft: number;
+  promptTop: number;
+  promptLeft: number;
 
   statusBlocks: string[] = ["not started", "in progress", "completed"];
 
@@ -43,6 +46,11 @@ export class TaskService {
         this.categsRef.valueChanges().subscribe(cats => this.taskCategories = cats);
       }
     });
+
+    window.onkeydown = (event) => {
+      if (event.keyCode == 27 && !this.actionInProgress) /// esc key
+        this.closePopups();
+    }
   }
 
   filterByStatusAndSort(tasks: Task[], status: string): Task[] {
@@ -295,21 +303,21 @@ export class TaskService {
   }
 
   deleteTask(category: TaskCategory, taskId: number): void {
-    this.setActionTimeOut(true);
+    this.setActionTimeOut(false);
     
     let docRef: AngularFirestoreDocument<TaskCategory> = this.categsRef.doc<TaskCategory>(category.name.toLowerCase());
     let taskIndex: number = category.tasks.findIndex(task => task.id == taskId);
     category.tasks.splice(taskIndex, 1); // bad practice to modify parameter, but cba to copy array
-    docRef.update({ 'tasks': category.tasks })
-      .then(() => {
-        this.closePopups();
-        this.actionInProgress = false;
-        this.messageService.addMessage("delete", "Task deleted");
-      })
-      .catch(() => {
-        this.actionInProgress = false;
-        this.messageService.addMessage("error", "Error deleting task. Please try again later");
-      });
+    // docRef.update({ 'tasks': category.tasks })
+    //   .then(() => {
+    //     this.closePopups();
+    //     this.actionInProgress = false;
+    //     this.messageService.addMessage("delete", "Task deleted");
+    //   })
+    //   .catch(() => {
+    //     this.actionInProgress = false;
+    //     this.messageService.addMessage("error", "Error deleting task. Please try again later");
+    //   });
   }
 
   changeTaskStatus(category: TaskCategory, taskId: number, change: number): void {
@@ -339,37 +347,46 @@ export class TaskService {
 
   showNewCategoryPopup(el: HTMLElement): void {
     this.closePopups();
+    this.globalService.setFocus('newCategoryName');
     this.newCategoryPopup = true;
-    this.activeParentElement = el;
+    this.popupTop = el.offsetTop;
+    this.popupLeft = el.offsetLeft;
   }
 
+  // Not used
   showEditCategoryPopup(el: HTMLElement): void {
     this.closePopups();
     this.editCategoryPopup = true;
-    this.activeParentElement = el;
   }
 
   showDeleteCategoryPopup(el: HTMLElement): void {
     this.closePopups();
     this.deleteCategoryPopup = true;
-    this.activeParentElement = el;
+    this.popupTop = el.offsetTop;
+    this.popupLeft = el.offsetLeft;
   }
 
   showNewTaskPopup(el: HTMLElement): void {
     this.closePopups();
+    this.globalService.setFocus('newTaskSubject');
     this.newTaskPopup = true;
-    this.activeParentElement = el;
+    this.popupTop = el.offsetTop;
+    this.popupLeft = el.offsetLeft;
   }
 
   showEditTaskPopup(el: HTMLElement): void {
     this.closePopups();
+    this.globalService.setFocus('editTaskSubject');
     this.editTaskPopup = true;
-    this.activeParentElement = el;
+    this.popupTop = el.offsetTop - el.parentElement.scrollTop;
+    this.popupLeft = el.offsetLeft;
   }
 
-  showDeleteTaskPopup(): void {
-    // this.closePopups();
+  showDeleteTaskPopup(el: HTMLElement): void {
     this.deleteTaskPopup = true;
+    this.promptTop = el.offsetTop + el.offsetHeight - 175;
+    this.promptLeft = el.offsetLeft - 25;
+    // console.log();
   }
 
   closePopups(): void {

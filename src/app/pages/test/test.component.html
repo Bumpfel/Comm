@@ -1,0 +1,83 @@
+<div *ngIf="user else showLogin">
+  <title>Comm - Test page</title>
+  <h3>Test stuff</h3>
+
+  <div class="testContainer">
+    <h4>Image carousel</h4>
+    <!-- {{ slideClass + " " + carouselDisplay }} {{ spinBlocked ? 'spin blocked' : '' }} -->
+    <br>
+    <section class="carousel">
+      <a class="prev" (click)="carouselPrev()">&lsaquo;</a>
+      <ng-container *ngFor="let slide of slides">
+        <img class="mySlides" [class]="slideClass" [ngStyle]="carouselDisplay == getSlideIndex(slide) ? { 'display':'block' } : { 'display':'none' }"
+          [src]="slide">
+      </ng-container>
+      <a class="next" (click)="carouselNext()">&rsaquo;</a>
+    </section>
+  </div>
+
+
+  <div class="testContainer">
+    <h4>Popup test</h4>
+    <button #popupButton (click)="showTestPopup(popupButton)">
+      <!-- popupPosTop = popupButton.offsetTop; popupPosLeft = popupButton.offsetLeft" -->
+      Show popup</button>
+  </div>
+
+
+  <div class="testContainer">
+    <h4>Timer</h4>
+    <!-- <button (click)="timer.start()">Start timer</button> -->
+    <button (click)="timer.isStarted() ? stopTimer() : startTimer()">{{ timer.isStarted() ? 'Stop timer' : 'Start timer' }}</button>
+    <button (click)="lapTimer()">Lap</button>
+    <button (click)="resetTimer()">Reset</button>
+    <input type="checkbox" (click)="timer.toggleLog()">console.log
+    <!-- <button (click)="timer.stop()">Stop timer</button> -->
+    <br>
+    <span id="timerStatus"></span>
+    <span id="timerDisplay"></span>
+  </div>
+
+
+  <div class="testContainer">
+    <h4>Clock</h4>
+    <button (click)="clockStarted ? stopClock() : ''; timeStamp = globalService.getTimeStamp()">Get current timestamp</button>
+    <button (click)="toggleClock()">{{ clockStarted ? 'Stop clock' : 'Start clock' }}</button>
+    <br>
+    <span>{{ timeStamp }}</span>
+  </div>
+
+
+  <!-- <div class="testContainer">
+    <h4>Efficiency test</h4>
+    <button (click)="testArray(3000000)">Test array find 3'000'000</button>
+    <br>
+    <input type="number" #num name="n" autocomplete="off" value="1000000">
+    <button (click)="testArray(num.value)">Test array find with this number</button>
+  </div> -->
+
+
+  <div class="testContainer">
+    <h4>Messages</h4>
+    <button (click)="this.messageService.addMessage('add', 'addition message')">Test add</button>
+    <button (click)="this.messageService.addMessage('update', 'edit message')">Test update</button>
+    <button (click)="this.messageService.addMessage('delete', 'deleted message')">Test delete</button>
+    <br>
+    <br>
+    <button (click)="this.messageService.addMessage('error', 'error message')">Test error</button>
+    <button (click)="this.messageService.addMessage('', 'generic message')">Test generic</button>
+  </div>
+
+  <div class="lightsoff" (click)="closePopups()" *ngIf="testPopup"></div>
+  <!-- <div class="popup" *ngIf="showTestPopup" [ngStyle]="setPopupPos(parentElement, -100, 200)"> -->
+  <!-- <div class="popup" *ngIf="showTestPopup" [ngStyle]="{'top': parentElement.offsetTop - 100 + 'px', 'left': parentElement.offsetLeft + 200 + 'px' }"> -->
+  <div class="popup" #testPopup id="testPopup" (mousedown)="globalService.dragPopup(testPopup, $event)" *ngIf="testPopup" [style.top]="popupTop + 'px'" [style.left]="popupLeft + 'px'">
+    <h4>Draggable popup</h4>
+    <input type="text" #testField id="testField">
+    <button (click)="closePopups()">Close</button>
+  </div>
+</div>
+
+<ng-template #showLogin>
+  You must be logged in to view this page
+</ng-template>

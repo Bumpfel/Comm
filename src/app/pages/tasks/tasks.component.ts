@@ -43,9 +43,4 @@ export class TasksComponent implements OnInit {
   //   }
   // }
 
-  testXY(elementId: string) {
-    console.log("x: " + window.document.getElementById(elementId).offsetLeft);
-    console.log("y: " + window.document.getElementById(elementId).offsetTop);
-  }
-
 }

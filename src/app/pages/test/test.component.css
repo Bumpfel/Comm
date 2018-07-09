@@ -1,0 +1,78 @@
+.testContainer {
+    width: 500px; 
+    margin-top: 20px;
+    padding: 5px 8px; 
+    border: 1px dashed black;
+}
+
+/* Carousel */
+@keyframes slide-in-left {
+    from { left: -300px; }
+    to { left: 0 }
+}
+@keyframes slide-out-left {
+    from { left: 0 }
+    to { left: -300px; }
+}
+
+@keyframes slide-in-right {
+    from { left: 300px }
+    to { left: 0; }
+}
+@keyframes slide-out-right {
+    from { left: 0; }
+    to { left: 300px }
+}
+
+section.carousel {
+    position: relative;
+    display: inline-block;
+    width: 300px;
+    height: 200px;
+    border: 1px solid black;
+    overflow: hidden;
+    line-height: 200px;
+}
+
+.carousel img {
+    position: absolute;
+    width: 200px;
+    /* border: 1px dashed red; */
+    margin: 0 50px;
+}
+img.slide-in-left {
+    animation: slide-in-left 0.5s forwards;
+}
+img.slide-out-left {
+    animation: slide-out-left 0.5s forwards;
+ }
+
+img.slide-in-right {
+    animation: slide-in-right 0.5s forwards;
+}
+img.slide-out-right {
+
+    animation: slide-out-right 0.5s forwards;
+ }
+
+
+.carousel a {
+    position: absolute;
+    width: 30px;
+    height: 100%;
+    font-size: 40px;
+    color: #eee;
+    text-shadow: 1px 3px #999;
+}
+.carousel a:hover {
+    background-color: rgba(220, 220, 220, .5);
+}
+.carousel a.prev {
+    left: 0;
+    padding-left: 10px;
+}
+.carousel a.next {
+    text-align: right;
+    padding-right: 10px;
+    right: 0;
+}

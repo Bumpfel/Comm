@@ -20,6 +20,30 @@ export class GlobalService {
     }, 0);
   }
 
+  dragPopup(el: HTMLElement, event) {
+    let xPos1, xPos2, yPos1, yPos2;
+    xPos2 = event.clientX;
+    yPos2 = event.clientY;
+    document.onmousemove = startDrag;
+    document.onmouseup = stopDrag;
+    
+    function startDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      xPos1 = xPos2 - e.clientX;
+      yPos1 = yPos2 - e.clientY;
+      xPos2 = e.clientX;
+      yPos2 = e.clientY;
+      el.style.top = (el.offsetTop - yPos1) + "px";
+      el.style.left = (el.offsetLeft - xPos1)  + "px";
+    }
+
+    function stopDrag() {
+      document.onmouseup = undefined;
+      document.onmousemove = undefined;
+    }
+  }
+
   getRandomColour(colourRange: string): string {
     var str = "#";
     var possible = colourRange;

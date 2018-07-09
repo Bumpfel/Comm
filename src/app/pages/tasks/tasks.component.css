@@ -165,6 +165,21 @@ section.tasks {
     width: 33%;
 }
 
+/* Urgh this css */
+.placeholder .taskPrio {
+    border: 1px dashed black;
+}
+.placeholder .main {
+    border-left: 1px dashed black;
+    border-right: 1px dashed black;
+}
+.placeholder .taskSubject {
+    border-right: 1px dashed black;
+}
+.placeholder .taskButtons {
+    border: 1px dashed black;
+}
+
 /* .taskButtons:first-child {
     text-align: left;
 }
@@ -177,10 +192,22 @@ section.tasks {
 
 button.addTask {
     margin: 10px;
-    /* margin-left: 52px; */
-    /* margin-right: 53px; */
+    /* margin-left: 52px;
+    margin-right: 53px; */
     /* margin-left: 15px; */
     font-size: 20px;
     width: 45px;
     height: 45px;
+}
+
+/* For placeholder task design */
+button.addTask2 {
+    width: 75px;
+    height: 60px;
+    border: none;
+    /* padding: 20px; */
+    outline: none;
+    background-color: white;
+    font-size: 40px;
+    cursor:pointer;
 }
