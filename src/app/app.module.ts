@@ -31,6 +31,9 @@ import { ChatService } from './services/chat.service';
 import { TasksComponent } from './pages/tasks/tasks.component';
 import { TaskService } from './services/task.service';
 import { TestComponent } from './pages/test/test.component';
+import { ProductsOverviewComponent } from './pages/products/products-overview/products-overview.component';
+import { ProductDetailsComponent } from './pages/products/product-details/product-details.component';
+import { ProductsMenuComponent } from './pages/products/products-menu/products-menu.component';
 
 
 @NgModule({
@@ -42,7 +45,10 @@ import { TestComponent } from './pages/test/test.component';
     TopnavbarComponent,
     MessagesComponent,
     TasksComponent,
-    TestComponent
+    TestComponent,
+    ProductsOverviewComponent,
+    ProductDetailsComponent,
+    ProductsMenuComponent
   ],
   imports: [
     BrowserModule,

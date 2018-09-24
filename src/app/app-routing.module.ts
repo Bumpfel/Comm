@@ -6,6 +6,8 @@ import { ChatChannelComponent } from './pages/chat/chat-channel/chat-channel.com
 import { StartComponent } from './pages/start/start.component';
 import { TasksComponent } from './pages/tasks/tasks.component';
 import { TestComponent } from './pages/test/test.component';
+import { ProductsOverviewComponent } from './pages/products/products-overview/products-overview.component';
+import { ProductDetailsComponent } from './pages/products/product-details/product-details.component';
 
 const routes : Routes = [
     {
@@ -32,6 +34,18 @@ const routes : Routes = [
     {
       path:"test",
       component:TestComponent
+    },
+    {
+      path:"products",
+      component:ProductsOverviewComponent
+    },
+    {
+      path:"products/category/:id",
+      component:ProductsOverviewComponent
+    },
+    {
+      path:"products/details/:id",
+      component:ProductDetailsComponent
     },
 ];
 @NgModule({

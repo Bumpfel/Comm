@@ -1,0 +1,12 @@
+<div class="container">
+  <app-products-menu></app-products-menu>
+
+  <section class="products">
+    <a *ngFor="let product of products">
+      <img [src]="product.imgUrl">
+      <div [routerLink]="'/products/details/' + product.id">
+        {{ product.name }}
+      </div>
+    </a>
+  </section>
+</div>

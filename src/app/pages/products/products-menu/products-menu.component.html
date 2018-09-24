@@ -1,0 +1,10 @@
+<section class="menu">
+  <a class="home" routerLink="/products">
+    Home
+  </a>
+  <a>
+    <div [routerLink]="'/products/category/' + category.id" *ngFor="let category of categories">
+      {{ category.name }}
+    </div>
+  </a>
+</section>
