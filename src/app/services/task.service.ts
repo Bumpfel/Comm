@@ -310,16 +310,16 @@ export class TaskService {
     let docRef: AngularFirestoreDocument<TaskCategory> = this.categsRef.doc<TaskCategory>(category.name.toLowerCase());
     let taskIndex: number = category.tasks.findIndex(task => task.id == taskId);
     category.tasks.splice(taskIndex, 1); // bad practice to modify parameter, but cba to copy array
-    // docRef.update({ 'tasks': category.tasks })
-    //   .then(() => {
-    //     this.closePopups();
-    //     this.actionInProgress = false;
-    //     this.messageService.addMessage("delete", "Task deleted");
-    //   })
-    //   .catch(() => {
-    //     this.actionInProgress = false;
-    //     this.messageService.addMessage("error", "Error deleting task. Please try again later");
-    //   });
+    docRef.update({ 'tasks': category.tasks })
+      .then(() => {
+        this.closePopups();
+        this.actionInProgress = false;
+        this.messageService.addMessage("delete", "Task deleted");
+      })
+      .catch(() => {
+        this.actionInProgress = false;
+        this.messageService.addMessage("error", "Error deleting task. Please try again later");
+      });
   }
 
   changeTaskStatus(category: TaskCategory, taskId: number, change: number): void {

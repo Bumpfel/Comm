@@ -3,10 +3,11 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 
 import * as firebase from 'firebase/app';
-import { format } from 'url';
 
 @Injectable()
 export class GlobalService {
+
+  private dragBlocked : boolean = false;
 
   constructor(private afs: AngularFirestore) { }
   
@@ -20,22 +21,33 @@ export class GlobalService {
     }, 0);
   }
 
+  blockDrag() {
+    this.dragBlocked = true;
+  }
+
+  unblockDrag() {
+    this.dragBlocked = false;
+  }
+
   dragPopup(el: HTMLElement, event) {
     let xPos1, xPos2, yPos1, yPos2;
     xPos2 = event.clientX;
     yPos2 = event.clientY;
-    document.onmousemove = startDrag;
-    document.onmouseup = stopDrag;
+
+    if(!this.dragBlocked) {
+      document.onmousemove = startDrag;
+      document.onmouseup = stopDrag;
+    }
     
     function startDrag(e) {
-      e = e || window.event;
-      e.preventDefault();
-      xPos1 = xPos2 - e.clientX;
-      yPos1 = yPos2 - e.clientY;
-      xPos2 = e.clientX;
-      yPos2 = e.clientY;
-      el.style.top = (el.offsetTop - yPos1) + "px";
-      el.style.left = (el.offsetLeft - xPos1)  + "px";
+        e = e || window.event;
+        e.preventDefault();
+        xPos1 = xPos2 - e.clientX;
+        yPos1 = yPos2 - e.clientY;
+        xPos2 = e.clientX;
+        yPos2 = e.clientY;
+        el.style.top = (el.offsetTop - yPos1) + "px";
+        el.style.left = (el.offsetLeft - xPos1)  + "px";
     }
 
     function stopDrag() {

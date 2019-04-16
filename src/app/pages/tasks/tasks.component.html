@@ -155,7 +155,7 @@
   <!-- {{ subject.focus() }} -->
   <h4>New task in {{ activeCategory.name }}</h4>
   <form (ngSubmit)="taskService.newTask(activeCategory, subject.value, description.value, points.value, priority.value)">
-    <fieldset [disabled]="taskService.actionInProgress">
+    <fieldset (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()" [disabled]="taskService.actionInProgress">
       <input type="text" placeholder="Subject" autocomplete="off" id="newTaskSubject" #subject name="s">
       <br>
       <textarea placeholder="Description" autocomplete="off" #description name="d"></textarea>
@@ -171,7 +171,8 @@
       </select>
       <br>
       <select #priority name="pr">
-        <option value="1">Priority: Low</option>
+        <option value="0">Disabled</option>
+        <option value="1" selected>Priority: Low</option>
         <option value="2">Priority: Medium</option>
         <option value="3">Priority: High</option>
         <option value="4">Priority: Critical</option>
@@ -189,11 +190,11 @@
 
 
 <!-- Edit Task Popup -->
-<div class="popup" #popup (mousedown)="!taskService.deleteTaskPopup ? globalService.dragPopup(popup, $event) : ''" [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.editTaskPopup">
+<div (mousedown)="!taskService.deleteTaskPopup ? globalService.dragPopup(popup, $event) : ''" class="popup" #popup [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.editTaskPopup">
   <!-- {{ subject.focus() }} -->
   <h4>Edit task</h4>
   <form (ngSubmit)="taskService.editTask(activeCategory, destinationCategory, activeTask.id, subject.value, description.value, points.value, priority.value)">
-    <fieldset [disabled]="taskService.actionInProgress || taskService.deleteTaskPopup">
+    <fieldset (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()" [disabled]="taskService.actionInProgress || taskService.deleteTaskPopup">
       <select [(ngModel)]="destinationCategory" name="dc">
         <option *ngFor="let category of taskCategories" [ngValue]="category">{{ activeCategory == category ? '&raquo;' : '' }} {{ category.name }}</option>
       </select>
