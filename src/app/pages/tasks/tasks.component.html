@@ -36,7 +36,7 @@
             <!-- Category buttons -->
             <i class="fa fa-trash link big" (click)="taskService.showDeleteCategoryPopup(thisCat); activeCategory = category" title="Delete this category" *ngIf="category.tasks.length == 0"></i>
             <i class="fa fa-trash disabledIcon big" title="Cannot delete this category as it contains tasks" *ngIf="category.tasks.length > 0"></i>
-            <i class="fa fa-archive link big" title="Archive this category" (click)="taskService.showArchiveCategoryPopup(thisCat); activeCategory = category" *ngIf="!category.archived"></i>
+            <i class="fa fa-archive link big" title="Archive this category" (click)="taskService.showArchiveCategoryConfirmation(thisCat); activeCategory = category" *ngIf="!category.archived"></i>
             <i class="fa fa-newspaper-o link big" title="Restore this category" (click)="taskService.archiveCategory(category, false)" *ngIf="category.archived"></i>
           </span>
           <!-- Collapsed category -->
@@ -89,7 +89,8 @@
             <div class="taskButtons" *ngIf="!category.archived">
               <span style="text-align: left">
                 <i class="fa fa-backward" [class.link]="task.status != 'not started' && task.priority > 0" [class.disabledIcon]="status == 'not started' || task.priority == 0"
-                  (click)="task.status != 'not started'  && task.priority > 0 ? taskService.changeTaskStatus(category, task.id, -1) : ''"
+                  (click)="task.status != 'not started' && task.priority > 0 ? taskService.showChangeTaskStatusConfirmation(thisTask) : ''"
+                  (click)="activeCategory = category; activeTask = task"
                   [title]="task.status == 'in progress' && task.priority > 0 ? 'Abort task' : (task.status == 'completed' ? 'Restart task' : '')"></i>
               </span>
               <span style="text-align: center">
@@ -97,7 +98,7 @@
               </span>
               <span style="text-align: right">
                 <i class="fa fa-forward" [class.link]="task.status != 'completed' && task.priority > 0" [class.disabledIcon]="status == 'completed' || task.priority == 0"
-                  (click)="task.status != 'completed' && task.priority > 0 ? taskService.changeTaskStatus(category, task.id, 1) : ''"
+                  (click)="task.status != 'completed' && task.priority > 0 ? taskService.changeTaskStatus(category, task, 1) : ''"
                   [title]="task.status == 'not started' && task.priority > 0 ? 'Start task' : (task.status == 'in progress' && task.priority > 0 ? 'Complete task' : '')"></i>
               </span>
             </div>
@@ -274,6 +275,24 @@
     <button (click)="taskService.deleteTaskPopup = undefined" [disabled]="taskService.actionInProgress">No</button>
   </fieldset>
 </div>
+
+
+<!-- Restart/Abort Task Confirmation Popup -->
+<div class="popup confirmationPrompt" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.promptTop + 'px'" [style.left]="taskService.promptLeft + 'px'" *ngIf="taskService.changeTaskStatusPopup">
+  <!-- Do you want to restart or abort the task? -->
+  Do you want to {{ activeTask.status == "completed" ? "restart" : "abort" }} the task?
+  <br>
+    <fieldset (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()">
+      <button (click)="taskService.changeTaskStatus(activeCategory, activeTask, -1); taskService.closePopups()" [disabled]="taskService.actionInProgress">
+        Yes
+        <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+      </button>
+      <button (click)="taskService.changeTaskStatusPopup = undefined" [disabled]="taskService.actionInProgress">No</button>
+    </fieldset>
+  </div>
+
+<!-- taskService.changeTaskStatus(category, task, -1) : '' -->
+
 
 <ng-template #showLogin>
   <!-- <app-404></app-404> -->

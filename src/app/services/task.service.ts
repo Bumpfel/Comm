@@ -24,6 +24,7 @@ export class TaskService {
   newTaskPopup: boolean;
   editTaskPopup: boolean;
   deleteTaskPopup: boolean;
+  changeTaskStatusPopup: boolean;
   // changeCategory: boolean;
 
   popupTop: number;
@@ -342,9 +343,10 @@ export class TaskService {
       });
   }
 
-  changeTaskStatus(category: TaskCategory, taskId: number, change: number): void {
+  changeTaskStatus(category: TaskCategory, task: Task, change: number): void {
+    // this.setActionTimeOut(false);
     let docRef: AngularFirestoreDocument<TaskCategory> = this.categsRef.doc<TaskCategory>(category.name.toLowerCase());
-    let task: Task = category.tasks.find(task => task.id == taskId);
+    // let task: Task = category.tasks.find(task => task.id == taskId);
     let statusIndex: number = this.statusBlocks.findIndex(status => status == task.status);
     task.status = this.statusBlocks[statusIndex + change]; // bad practice
     if (task.status == "not started") {
@@ -360,7 +362,10 @@ export class TaskService {
       task.completedAt = this.globalService.getTimeStamp();
 
     docRef.update({ 'tasks': category.tasks })
-      // .then(() => console.log("changed status"));
+      .then(() => {
+        // this.actionInProgress = false;
+        // this.closePopups();
+      })
       .catch(() => this.messageService.addMessage("error", "An error occurred. Please try again later"));
   }
 
@@ -388,14 +393,14 @@ export class TaskService {
     this.popupLeft = el.offsetLeft;
   }
 
-  showArchiveCategoryPopup(el: HTMLElement): void {
+  showArchiveCategoryConfirmation(el: HTMLElement) : void {
     this.closePopups();
     this.archiveCategoryPopup = true;
     this.popupTop = el.offsetTop;
     this.popupLeft = el.offsetLeft;
   }
 
-  showNewTaskPopup(el: HTMLElement): void {
+  showNewTaskPopup(el: HTMLElement) : void {
     this.closePopups();
     this.globalService.setFocus('newTaskSubject');
     this.newTaskPopup = true;
@@ -403,7 +408,7 @@ export class TaskService {
     this.popupLeft = el.offsetLeft;
   }
 
-  showEditTaskPopup(el: HTMLElement): void {
+  showEditTaskPopup(el: HTMLElement) : void {
     this.closePopups();
     this.globalService.setFocus('editTaskSubject');
     this.editTaskPopup = true;
@@ -411,14 +416,21 @@ export class TaskService {
     this.popupLeft = el.offsetLeft;
   }
 
-  showDeleteTaskPopup(el: HTMLElement): void {
+  showDeleteTaskPopup(el: HTMLElement) : void {
     this.deleteTaskPopup = true;
     this.promptTop = el.offsetTop + el.offsetHeight - 175;
     this.promptLeft = el.offsetLeft - 25;
     // console.log();
   }
 
-  closePopups(): void {
+  showChangeTaskStatusConfirmation(el: HTMLElement) : void {
+    this.closePopups();
+    this.changeTaskStatusPopup = true;
+    this.popupTop = el.offsetTop;
+    this.popupLeft = el.offsetLeft;
+  }
+
+  closePopups() : void {
     // console.log(this.activeParentElement.offsetTop + ", " + this.activeParentElement.offsetLeft)
     // this.activeParentElement = undefined;
     this.newCategoryPopup = undefined;
@@ -428,6 +440,7 @@ export class TaskService {
     this.newTaskPopup = undefined;
     this.editTaskPopup = undefined;
     this.deleteTaskPopup = undefined;
+    this.changeTaskStatusPopup = undefined;
     // this.changeCategory = undefined;
   }
 
