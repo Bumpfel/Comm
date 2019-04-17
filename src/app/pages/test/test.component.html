@@ -1,7 +1,8 @@
-<div *ngIf="user else showLogin">
+<div *ngIf="user else showLogin" [class.blurredContent]="testPopup">
   <title>Comm - Test page</title>
   <h3>Test stuff</h3>
 
+  <!-- Carousel -->
   <div class="testContainer">
     <h4>Image carousel</h4>
     <!-- {{ slideClass + " " + carouselDisplay }} {{ spinBlocked ? 'spin blocked' : '' }} -->
@@ -16,7 +17,7 @@
     </section>
   </div>
 
-
+<!-- Popup button -->
   <div class="testContainer">
     <h4>Popup test</h4>
     <button #popupButton (click)="showTestPopup(popupButton)">
@@ -24,7 +25,7 @@
       Show popup</button>
   </div>
 
-
+<!-- Timer -->
   <div class="testContainer">
     <h4>Timer</h4>
     <!-- <button (click)="timer.start()">Start timer</button> -->
@@ -38,7 +39,7 @@
     <span id="timerDisplay"></span>
   </div>
 
-
+<!-- Clock -->
   <div class="testContainer">
     <h4>Clock</h4>
     <button (click)="clockStarted ? stopClock() : ''; timeStamp = globalService.getTimeStamp()">Get current timestamp</button>
@@ -56,7 +57,7 @@
     <button (click)="testArray(num.value)">Test array find with this number</button>
   </div> -->
 
-
+<!-- Messages -->
   <div class="testContainer">
     <h4>Messages</h4>
     <button (click)="this.messageService.addMessage('add', 'addition message')">Test add</button>
@@ -68,14 +69,18 @@
     <button (click)="this.messageService.addMessage('', 'generic message')">Test generic</button>
   </div>
 
-  <div class="lightsoff" (click)="closePopups()" *ngIf="testPopup"></div>
-  <!-- <div class="popup" *ngIf="showTestPopup" [ngStyle]="setPopupPos(parentElement, -100, 200)"> -->
-  <!-- <div class="popup" *ngIf="showTestPopup" [ngStyle]="{'top': parentElement.offsetTop - 100 + 'px', 'left': parentElement.offsetLeft + 200 + 'px' }"> -->
-  <div class="popup" #testPopup id="testPopup" (mousedown)="globalService.dragPopup(testPopup, $event)" *ngIf="testPopup" [style.top]="popupTop + 'px'" [style.left]="popupLeft + 'px'">
-    <h4>Draggable popup</h4>
-    <input type="text" #testField id="testField">
+</div>
+
+<!-- Popups and effects -->
+<div class="lightsoff" (click)="closePopups()" *ngIf="testPopup"></div>
+<!-- <div class="popup" *ngIf="showTestPopup" [ngStyle]="setPopupPos(parentElement, -100, 200)"> -->
+<!-- <div class="popup" *ngIf="showTestPopup" [ngStyle]="{'top': parentElement.offsetTop - 100 + 'px', 'left': parentElement.offsetLeft + 200 + 'px' }"> -->
+<div class="popup" #testPopup id="testPopup" (mousedown)="globalService.dragPopup(testPopup, $event)" *ngIf="testPopup" [style.top]="popupTop + 'px'" [style.left]="popupLeft + 'px'">
+  <h4>Draggable popup</h4>
+  <fieldset (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()">
+    <input type="text" #testField id="testField">  
     <button (click)="closePopups()">Close</button>
-  </div>
+  </fieldset>
 </div>
 
 <ng-template #showLogin>

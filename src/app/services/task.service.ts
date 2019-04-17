@@ -19,6 +19,8 @@ export class TaskService {
   newCategoryPopup: boolean;
   editCategoryPopup: boolean;
   deleteCategoryPopup: boolean;
+  archiveCategoryPopup: boolean;
+  showArchivedCats: boolean;
   newTaskPopup: boolean;
   editTaskPopup: boolean;
   deleteTaskPopup: boolean;
@@ -182,7 +184,7 @@ export class TaskService {
             .then(() => {
               if(category.name.toLowerCase() != trimmedName.toLowerCase()) {
                 this.categsRef.doc(category.name.toLowerCase()).delete()//.then(() => console.log(category.name + " deleted"));
-                .catch((error) => {
+                .catch(() => {
                   console.log("Error deleting old category");
                 })
               }
@@ -214,6 +216,24 @@ export class TaskService {
       this.pendingDeletion = undefined;
       this.messageService.addMessage("error", "Category name mustn't be empty");
     }
+  }
+
+  
+  archiveCategory(cat: TaskCategory, archiveState: boolean) {
+    this.setActionTimeOut(false);
+    this.categsRef.doc<TaskCategory>(cat.name.toLowerCase()).update({ "archived": archiveState })
+      .then(() => {
+        this.closePopups();
+        this.actionInProgress = false;
+        this.messageService.addMessage("update", "Category " + (archiveState ? "archived" : "restored" ));
+      });
+  }
+
+  toggleShowArchivedCats() {
+    if(!this.showArchivedCats)
+      this.showArchivedCats = true;
+    else
+      this.showArchivedCats = false;
   }
 
   saveCollapsedCategoryState(name: string, collapsedState: boolean): void { // was used for only saving on ngOnDestroy (function name made more sense). using the other one atm. 
@@ -368,6 +388,13 @@ export class TaskService {
     this.popupLeft = el.offsetLeft;
   }
 
+  showArchiveCategoryPopup(el: HTMLElement): void {
+    this.closePopups();
+    this.archiveCategoryPopup = true;
+    this.popupTop = el.offsetTop;
+    this.popupLeft = el.offsetLeft;
+  }
+
   showNewTaskPopup(el: HTMLElement): void {
     this.closePopups();
     this.globalService.setFocus('newTaskSubject');
@@ -397,6 +424,7 @@ export class TaskService {
     this.newCategoryPopup = undefined;
     this.editCategoryPopup = undefined;
     this.deleteCategoryPopup = undefined;
+    this.archiveCategoryPopup = undefined;
     this.newTaskPopup = undefined;
     this.editTaskPopup = undefined;
     this.deleteTaskPopup = undefined;

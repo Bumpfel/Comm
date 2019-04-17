@@ -61,6 +61,14 @@ section.tasks {
     border-left: none;
 }
 
+.archived {
+    background-color: #ddd;
+}
+
+.archivedTask {
+    background-color: #eee;
+}
+
 /* section.collapsed {
     height: 60px;
     overflow: hidden;
@@ -114,8 +122,8 @@ section.tasks {
 
 .task .main {
     float: left;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
+    border: 1px solid black;
+    border-top: 0;
 }
 
 .task .taskSubject {
@@ -159,6 +167,7 @@ section.tasks {
     padding: 2px 0;
     font-size: 12px;
     border: 1px solid black;
+    border-top: none;
 }
 
 .taskButtons span {
@@ -170,14 +179,15 @@ section.tasks {
     border: 1px dashed black;
 }
 .placeholder .main {
-    border-left: 1px dashed black;
-    border-right: 1px dashed black;
+    border: 1px dashed black;
+    border-top: 0;
 }
 .placeholder .taskSubject {
     border-right: 1px dashed black;
 }
 .placeholder .taskButtons {
     border: 1px dashed black;
+    border-top: 0;
 }
 
 /* .taskButtons:first-child {

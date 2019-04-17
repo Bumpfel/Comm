@@ -1,19 +1,28 @@
 <title>Tasks - Comm</title>
 <div *ngIf="user && !user.guest else showLogin" 
-[class.blurredContent]="taskService.newCategoryPopup || taskService.editCategoryPopup || taskService.deleteCategoryPopup || taskService.newTaskPopup || taskService.editTaskPopup">
+[class.blurredContent]="taskService.newCategoryPopup || taskService.editCategoryPopup || taskService.deleteCategoryPopup || taskService.archiveCategoryPopup || taskService.newTaskPopup || taskService.editTaskPopup">
   <!-- <fieldset [disabled]="taskService.actionInProgress"> -->
     <button #el (click)="taskService.showNewCategoryPopup(el)" [disabled]="taskService.newCategoryPopup">New category</button>
+    <br>
+    <label>
+      <input type="checkbox" (click)="taskService.toggleShowArchivedCats()"> Show archived categories
+    </label>
     <br>
     <br>
 
     <!-- Categories -->
     <div class="category" #thisCat *ngFor="let category of taskCategories" [id]="category.name" [class.collapsedCategory]="category.collapsed"
-      [class.hidden]="taskService.pendingDeletion == category.name">
-      <div class="nameOfCategory">
+      [class.hidden]="taskService.pendingDeletion == category.name || (category.archived && !taskService.showArchivedCats)">
+      <div class="nameOfCategory" [class.archived]="category.archived">
         <h4>
-          <span (mouseover)="editCategory = category.name" *ngIf="(editCategory || editMode) != category.name">
+          <!-- Category name and actions -->
+          <span (mouseover)="editCategory = category.name" *ngIf="((editCategory || editMode) != category.name) && !category.archived">
             <input type="text" autocomplete="off" [value]="category.name">
           </span>
+
+          <span *ngIf="category.archived">{{ category.name }}</span>
+          
+          <!-- Edit name  -->
           <span (mouseout)="editCategory = undefined" (click)="editMode = category.name" *ngIf="(editCategory || editMode) == category.name">
             <form [id]="category.name" (ngSubmit)="taskService.editCategory(category, name.value); editCategory = undefined; editMode = undefined">
               <input type="text" autocomplete="off" [value]="category.name" #name name="n" id="newName" (blur)="editMode = undefined">
@@ -24,8 +33,11 @@
             <i class="fa fa-minus link" (click)="category.collapsed = true; taskService.collapseCategory(category.name, true)" title="Collapse category"
               *ngIf="!category.collapsed else showCollapsedName"></i>
             <br>
-            <i class="fa fa-trash link" (click)="taskService.showDeleteCategoryPopup(thisCat); activeCategory = category" title="Delete this category" *ngIf="category.tasks.length == 0"></i>
-            <i class="fa fa-trash disabledIcon" title="Cannot delete this category as it contains tasks" *ngIf="category.tasks.length > 0"></i>
+            <!-- Category buttons -->
+            <i class="fa fa-trash link big" (click)="taskService.showDeleteCategoryPopup(thisCat); activeCategory = category" title="Delete this category" *ngIf="category.tasks.length == 0"></i>
+            <i class="fa fa-trash disabledIcon big" title="Cannot delete this category as it contains tasks" *ngIf="category.tasks.length > 0"></i>
+            <i class="fa fa-archive link big" title="Archive this category" (click)="taskService.showArchiveCategoryPopup(thisCat); activeCategory = category" *ngIf="!category.archived"></i>
+            <i class="fa fa-newspaper-o link big" title="Restore this category" (click)="taskService.archiveCategory(category, false)" *ngIf="category.archived"></i>
           </span>
           <!-- Collapsed category -->
           <ng-template #showCollapsedCategory>
@@ -37,9 +49,9 @@
       </div>
       <!-- Tasks - all status blocks -->
       <ng-container *ngFor="let status of taskService.statusBlocks">
-        <section class="tasks" *ngIf="!category.collapsed">
+        <section class="tasks" *ngIf="!category.collapsed" [class.archived]="category.archived">
           <!-- New Placeholder Task -->
-          <div class="task placeholder" #placeholder *ngIf="status == 'not started'">
+          <div class="task placeholder" #placeholder *ngIf="status == 'not started' && !category.archived">
             <div class="taskPrio">&nbsp;</div>
             <div class="main">
               <div class="taskSubject">
@@ -65,7 +77,7 @@
             <div class="taskPrio {{ prioText[task.priority] }}" title="Task priority: {{ prioText[task.priority] }}">
               <!-- {{ prioText[task.priority] }} -->
             </div>
-            <div class="main">
+            <div class="main" [class.archivedTask]="category.archived">
               <div class="taskSubject" [class.finishedTask]="task.status == 'completed'" [title]="task.status == 'not started' ? task.description : (task.status == 'in progress' ? task.description + '\n\nTask started at ' + task.startedAt.substring(0, 16) : task.description + '\n\nTask started at ' + task.startedAt.substring(0, 16) + '\nTask completed at ' + task.completedAt.substring(0, 16))">
                 {{ task.subject }}
               </div>
@@ -74,10 +86,10 @@
               </div>
             </div>
             <!-- Task Buttons -->
-            <div class="taskButtons">
+            <div class="taskButtons" *ngIf="!category.archived">
               <span style="text-align: left">
                 <i class="fa fa-backward" [class.link]="task.status != 'not started' && task.priority > 0" [class.disabledIcon]="status == 'not started' || task.priority == 0"
-                  (click)="task.status != 'not started'  &&task.priority > 0 ? taskService.changeTaskStatus(category, task.id, -1) : ''"
+                  (click)="task.status != 'not started'  && task.priority > 0 ? taskService.changeTaskStatus(category, task.id, -1) : ''"
                   [title]="task.status == 'in progress' && task.priority > 0 ? 'Abort task' : (task.status == 'completed' ? 'Restart task' : '')"></i>
               </span>
               <span style="text-align: center">
@@ -98,16 +110,17 @@
   <!-- </fieldset> -->
 </div>
 
+
 <!-- Lights off Element -->
 <div class="lightsoff" 
-*ngIf="taskService.newCategoryPopup || taskService.editCategoryPopup || taskService.deleteCategoryPopup || taskService.newTaskPopup || taskService.editTaskPopup"></div>
+*ngIf="taskService.newCategoryPopup || taskService.editCategoryPopup || taskService.deleteCategoryPopup  || taskService.archiveCategoryPopup || taskService.newTaskPopup || taskService.editTaskPopup"></div>
 <!-- (click)="taskService.actionInProgress ? '' : taskService.closePopups()"  -->
 
 <!-- New Category Popup -->
 <div class="popup" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.newCategoryPopup">
   <!-- {{ name.focus() }} -->
   <h4>New category</h4>
-  <form (ngSubmit)="taskService.newCategory(name.value)">
+  <form (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()" (ngSubmit)="taskService.newCategory(name.value)">
     <input type="text" placeholder="Name" autocomplete="off" id="newCategoryName" #name name="n">
     <br>
     <button type="submit" [disabled]="taskService.actionInProgress">
@@ -124,7 +137,7 @@
   <!-- {{ name.focus() }} -->
   <h4>Edit category</h4>
   <form (ngSubmit)="taskService.editCategory(activeCategory, name.value)">
-    <fieldset [disabled]="taskService.actionInProgress || taskService.deleteCategoryPopup">
+    <fieldset (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()" [disabled]="taskService.actionInProgress || taskService.deleteCategoryPopup">
       <input type="text" placeholder="Name" autocomplete="off" [value]="activeCategory.name" id="editCategoryName" #name name="n">
       <br>
       <button type="submit">
@@ -142,11 +155,27 @@
 <div class="popup confirmationPrompt" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.deleteCategoryPopup">
   This action cannot be undone! Are you sure you want to delete '{{ activeCategory.name }}'?
   <br>
-  <button (click)="taskService.deleteCategory(activeCategory)" [disabled]="taskService.actionInProgress">
-    Yes
-    <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
-  </button>
-  <button (click)="taskService.deleteCategoryPopup = undefined" [disabled]="taskService.actionInProgress">No</button>
+  <fieldset (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()">  
+    <button (click)="taskService.deleteCategory(activeCategory)" [disabled]="taskService.actionInProgress">
+      Yes
+      <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+    </button>
+    <button (click)="taskService.deleteCategoryPopup = undefined" [disabled]="taskService.actionInProgress">No</button>
+  </fieldset>
+</div>
+
+
+<!-- Archive Category Confirmation Popup -->
+<div class="popup confirmationPrompt" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.popupTop + 'px'" [style.left]="taskService.popupLeft + 'px'" *ngIf="taskService.archiveCategoryPopup">
+    Do you want to archive '{{ activeCategory.name }}'?. Archived categories can still be seen if 'Show archived category' is checked, and can also be restored.
+    <br>
+    <fieldset (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()">
+      <button (click)="taskService.archiveCategory(activeCategory, true)" [disabled]="taskService.actionInProgress">
+        Yes
+        <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+      </button>
+      <button (click)="taskService.archiveCategoryPopup = undefined" [disabled]="taskService.actionInProgress">No</button>
+    </fieldset>
 </div>
 
 
@@ -237,13 +266,14 @@
 <div class="popup confirmationPrompt" #popup (mousedown)="globalService.dragPopup(popup, $event)" [style.top]="taskService.promptTop + 'px'" [style.left]="taskService.promptLeft + 'px'" *ngIf="taskService.deleteTaskPopup">
   This action cannot be undone! Are you sure you want to delete the task?
   <br>
-  <button (click)="taskService.deleteTask(activeCategory, activeTask.id)" [disabled]="taskService.actionInProgress">
-    Yes
-    <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
-  </button>
-  <button (click)="taskService.deleteTaskPopup = undefined" [disabled]="taskService.actionInProgress">No</button>
+  <fieldset (mouseover)="globalService.blockDrag()" (mouseout)="globalService.unblockDrag()">
+    <button (click)="taskService.deleteTask(activeCategory, activeTask.id)" [disabled]="taskService.actionInProgress">
+      Yes
+      <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress"></i>
+    </button>
+    <button (click)="taskService.deleteTaskPopup = undefined" [disabled]="taskService.actionInProgress">No</button>
+  </fieldset>
 </div>
-
 
 <ng-template #showLogin>
   <!-- <app-404></app-404> -->

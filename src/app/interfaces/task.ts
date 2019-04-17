@@ -3,6 +3,7 @@ export interface TaskCategory {
     // sortId: number;
     tasks: Task[];
     collapsed: boolean;
+    archived?: boolean;
 }
 
 export interface Task {
