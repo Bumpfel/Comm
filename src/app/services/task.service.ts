@@ -25,6 +25,7 @@ export class TaskService {
   editTaskPopup: boolean;
   deleteTaskPopup: boolean;
   changeTaskStatusPopup: boolean;
+
   // changeCategory: boolean;
 
   popupTop: number;
@@ -372,6 +373,35 @@ export class TaskService {
 
   //----------------------- Popup functions ----------------------------//
 
+  hasActivePopup() : boolean {
+    if(this.actionInProgress ||
+      this.newCategoryPopup ||
+      this.editCategoryPopup ||
+      this.deleteCategoryPopup ||
+      this.archiveCategoryPopup ||
+      this.showArchivedCats ||
+      this.newTaskPopup ||
+      this.editTaskPopup ||
+      this.deleteTaskPopup ||
+      this.changeTaskStatusPopup) {
+        return true;
+      }
+    return false;
+  }
+
+  
+  closePopups() : void {
+    this.newCategoryPopup = undefined;
+    this.editCategoryPopup = undefined;
+    this.deleteCategoryPopup = undefined;
+    this.archiveCategoryPopup = undefined;
+    this.newTaskPopup = undefined;
+    this.editTaskPopup = undefined;
+    this.deleteTaskPopup = undefined;
+    this.changeTaskStatusPopup = undefined;
+    // this.changeCategory = undefined;
+  }
+
   showNewCategoryPopup(el: HTMLElement): void {
     this.closePopups();
     this.globalService.setFocus('newCategoryName');
@@ -416,34 +446,18 @@ export class TaskService {
     this.popupLeft = el.offsetLeft;
   }
 
-  showDeleteTaskPopup(el: HTMLElement) : void {
+  showDeleteTaskPrompt(el: HTMLElement) : void {
     this.deleteTaskPopup = true;
     this.promptTop = el.offsetTop + el.offsetHeight - 175;
     this.promptLeft = el.offsetLeft - 25;
-    // console.log();
   }
 
-  showChangeTaskStatusConfirmation(el: HTMLElement) : void {
+  showChangeTaskStatusPrompt(el: HTMLElement) : void {
     this.closePopups();
     this.changeTaskStatusPopup = true;
-    this.popupTop = el.offsetTop;
-    this.popupLeft = el.offsetLeft;
+    this.promptTop = el.offsetTop + 40;
+    this.promptLeft = el.offsetLeft - 25;
   }
-
-  closePopups() : void {
-    // console.log(this.activeParentElement.offsetTop + ", " + this.activeParentElement.offsetLeft)
-    // this.activeParentElement = undefined;
-    this.newCategoryPopup = undefined;
-    this.editCategoryPopup = undefined;
-    this.deleteCategoryPopup = undefined;
-    this.archiveCategoryPopup = undefined;
-    this.newTaskPopup = undefined;
-    this.editTaskPopup = undefined;
-    this.deleteTaskPopup = undefined;
-    this.changeTaskStatusPopup = undefined;
-    // this.changeCategory = undefined;
-  }
-
 
   //------------------------ Temporary fix functions ----------------------//
 

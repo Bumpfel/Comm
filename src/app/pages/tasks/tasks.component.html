@@ -1,6 +1,6 @@
 <title>Tasks - Comm</title>
 <div *ngIf="user && !user.guest else showLogin" 
-[class.blurredContent]="taskService.newCategoryPopup || taskService.editCategoryPopup || taskService.deleteCategoryPopup || taskService.archiveCategoryPopup || taskService.newTaskPopup || taskService.editTaskPopup">
+[class.blurredContent]="taskService.hasActivePopup()">
   <!-- <fieldset [disabled]="taskService.actionInProgress"> -->
     <button #el (click)="taskService.showNewCategoryPopup(el)" [disabled]="taskService.newCategoryPopup">New category</button>
     <br>
@@ -89,7 +89,7 @@
             <div class="taskButtons" *ngIf="!category.archived">
               <span style="text-align: left">
                 <i class="fa fa-backward" [class.link]="task.status != 'not started' && task.priority > 0" [class.disabledIcon]="status == 'not started' || task.priority == 0"
-                  (click)="task.status != 'not started' && task.priority > 0 ? taskService.showChangeTaskStatusConfirmation(thisTask) : ''"
+                  (click)="task.status != 'not started' && task.priority > 0 ? taskService.showChangeTaskStatusPrompt(thisTask) : ''"
                   (click)="activeCategory = category; activeTask = task"
                   [title]="task.status == 'in progress' && task.priority > 0 ? 'Abort task' : (task.status == 'completed' ? 'Restart task' : '')"></i>
               </span>
@@ -114,7 +114,7 @@
 
 <!-- Lights off Element -->
 <div class="lightsoff" 
-*ngIf="taskService.newCategoryPopup || taskService.editCategoryPopup || taskService.deleteCategoryPopup  || taskService.archiveCategoryPopup || taskService.newTaskPopup || taskService.editTaskPopup"></div>
+*ngIf="taskService.hasActivePopup()"></div>
 <!-- (click)="taskService.actionInProgress ? '' : taskService.closePopups()"  -->
 
 <!-- New Category Popup -->
@@ -257,7 +257,7 @@
         <i class="fa fa-spinner fa-spin" *ngIf="taskService.actionInProgress && !taskService.deleteTaskPopup"></i>
       </button>
       <button type="reset" (click)="taskService.closePopups()">Cancel</button>
-      <button type="button" (click)="taskService.showDeleteTaskPopup(popup)">Delete</button>
+      <button type="button" (click)="taskService.showDeleteTaskPrompt(popup)">Delete</button>
     </fieldset>
   </form>
 </div>
@@ -290,8 +290,6 @@
       <button (click)="taskService.changeTaskStatusPopup = undefined" [disabled]="taskService.actionInProgress">No</button>
     </fieldset>
   </div>
-
-<!-- taskService.changeTaskStatus(category, task, -1) : '' -->
 
 
 <ng-template #showLogin>
