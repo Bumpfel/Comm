@@ -1,6 +1,6 @@
 var admin = require("firebase-admin");
 var fs = require('fs');
-var serviceAccount = require("./serviceAccountKey.json");
+var serviceAccount = require("./private/serviceAccountKey.json");
 
 var collectionName = process.argv[2];
 
