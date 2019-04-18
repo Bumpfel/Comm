@@ -20,6 +20,9 @@
 <!-- Popup button -->
   <div class="testContainer">
     <h4>Popup test</h4>
+    <!-- <button (click)="popupService.newConfirmationPrompt('testing confirmation prompt popup', 'Click sumtin', popupService.testCallback('test123'))">Show popup (component - callback) </button> -->
+    <button (click)="confirmationPrompt()">Show popup (component - observer)</button>
+
     <button #popupButton (click)="showTestPopup(popupButton)">
       <!-- popupPosTop = popupButton.offsetTop; popupPosLeft = popupButton.offsetLeft" -->
       Show popup</button>

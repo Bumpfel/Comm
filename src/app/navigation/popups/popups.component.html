@@ -1,0 +1,29 @@
+<div class="popup" *ngIf="popupService.confirmationPrompt">
+    {{ popupService.confirmationPromptText }}
+    <br> 
+    {{ popupService.confirmationPromptText2 }}
+    <br>
+    <button (click)="popupService.setPromptAnswer(true)">Yes</button>
+    <button (click)="popupService.setPromptAnswer(false)">No</button>
+</div>
+
+<!-- Callback popup (not used)  -->
+<!-- <div class="popup" *ngIf="popupService.confirmationPrompt">
+    {{ popupService.confirmationPromptText }}
+    <br> 
+    {{ popupService.confirmationPromptText2 }}
+    <br>
+    <button (click)="popupService.executeAction(0)">Yes</button>
+    <button (click)="popupService.closePopups()">No</button>
+</div> -->
+
+<!--
+<div class="popup" *ngIf="popupService.createChannelPopup">
+    <strong>{{ popupService.createChannelPopup }}</strong>
+    <form (ngSubmit)="void()">
+        <input type="text" placeholder="Name" autofocus #newChatChannelName name="channelName">
+        <input type="button" value="Create" (click)="chatService.newChatChannel(newChatChannelName.value)">
+        <input type="button" value="Cancel" (click)="popupService.closePopups()">
+    </form>
+</div>
+-->

@@ -17,23 +17,26 @@ import { AppRoutingModule } from './app-routing.module';
 // Navigation
 import { TopnavbarComponent } from './navigation/topnavbar/topnavbar.component';
 import { MessagesComponent } from './navigation/messages/messages.component';
+import { PopupsComponent } from './navigation/popups/popups.component';
 
 // Pages
 import { ChatLobbyComponent } from './pages/chat/chat-lobby/chat-lobby.component';
 import { ChatChannelComponent } from './pages/chat/chat-channel/chat-channel.component';
 import { StartComponent } from './pages/start/start.component';
+import { TasksComponent } from './pages/tasks/tasks.component';
+import { TestComponent } from './pages/test/test.component';
+import { ProductsOverviewComponent } from './pages/products/products-overview/products-overview.component';
+import { ProductDetailsComponent } from './pages/products/product-details/product-details.component';
+import { ProductsMenuComponent } from './pages/products/products-menu/products-menu.component';
 
 // Services
 import { GlobalService } from './services/global.service';
 import { AuthService } from './services/auth.service';
 import { MessageService } from './services/message.service';
 import { ChatService } from './services/chat.service';
-import { TasksComponent } from './pages/tasks/tasks.component';
 import { TaskService } from './services/task.service';
-import { TestComponent } from './pages/test/test.component';
-import { ProductsOverviewComponent } from './pages/products/products-overview/products-overview.component';
-import { ProductDetailsComponent } from './pages/products/product-details/product-details.component';
-import { ProductsMenuComponent } from './pages/products/products-menu/products-menu.component';
+import { PopupService } from './services/popup.service';
+
 
 
 @NgModule({
@@ -48,7 +51,8 @@ import { ProductsMenuComponent } from './pages/products/products-menu/products-m
     TestComponent,
     ProductsOverviewComponent,
     ProductDetailsComponent,
-    ProductsMenuComponent
+    ProductsMenuComponent,
+    PopupsComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +68,8 @@ import { ProductsMenuComponent } from './pages/products/products-menu/products-m
     AuthService,
     MessageService,
     ChatService,
-    TaskService
+    TaskService,
+    PopupService
   ],
   bootstrap: [AppComponent]
 })

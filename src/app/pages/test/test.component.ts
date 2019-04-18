@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from '../../services/message.service';
 import { GlobalService, Timer } from '../../services/global.service';
+import { PopupService } from '../../services/popup.service';
 
 @Component({
   selector: 'app-test',
@@ -40,9 +41,12 @@ export class TestComponent implements OnInit {
   popupTop: number;
   popupLeft: number;
 
-  constructor(private authService: AuthService,
+  constructor(
+    private authService: AuthService,
     private messageService: MessageService,
-    private globalService: GlobalService) { }
+    private globalService: GlobalService,
+    public popupService: PopupService,
+    ) { }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => this.user = user);
@@ -58,8 +62,24 @@ export class TestComponent implements OnInit {
 
   }
 
+  
+  //--------------------------------- Test Popup Component --------------------------------------
 
+  confirmationPrompt() {
+    this.popupService.newConfirmationPromptObservable("test prompt", "click sumtin").subscribe(answer => {
+      console.log(answer);
+    });
+
+
+
+
+  }
+  
   // -------------------------------- Popup -----------------------------------
+  
+  
+
+
   showTestPopup(parentElement: HTMLElement) {
     this.testPopup = true;
     this.globalService.setFocus('testField')
