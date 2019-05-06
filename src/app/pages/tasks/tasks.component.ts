@@ -22,8 +22,9 @@ export class TasksComponent implements OnInit {
 
   constructor(private afs: AngularFirestore,
               private authService: AuthService,
-              private taskService: TaskService,
-              private globalService: GlobalService) { }
+              public taskService: TaskService,
+              public globalService: GlobalService
+              ) { }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {

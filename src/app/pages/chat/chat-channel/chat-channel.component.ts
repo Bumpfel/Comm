@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AuthService } from '../../../services/auth.service';
-import { GlobalService } from '../../../services/global.service';
+// import { GlobalService } from '../../../services/global.service';
 import { ActivatedRoute } from '@angular/router';
-import { MessageService } from '../../../services/message.service';
-import { ChatService } from '../../../services/chat.service';
+// import { MessageService } from '../../../services/message.service';
+// import { ChatService } from '../../../services/chat.service';
 
 import { ChatChannel, ChatMsg } from '../../../interfaces/chat';
 
@@ -29,11 +29,12 @@ export class ChatChannelComponent implements OnInit {
 
 
   constructor(private afs: AngularFirestore,
-              private chatService: ChatService,
+              // private chatService: ChatService,
               private authService: AuthService,
-              private globalService: GlobalService,
+              // private globalService: GlobalService,
               private route: ActivatedRoute,
-              private messageService: MessageService) { }
+              // private messageService: MessageService
+              ) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {

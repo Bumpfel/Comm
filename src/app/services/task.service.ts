@@ -379,7 +379,6 @@ export class TaskService {
       this.editCategoryPopup ||
       this.deleteCategoryPopup ||
       this.archiveCategoryPopup ||
-      this.showArchivedCats ||
       this.newTaskPopup ||
       this.editTaskPopup ||
       this.deleteTaskPopup ||
