@@ -35,7 +35,7 @@
   You have to sign in to be able to chat
   <br>
   <br>
-  <button type="menu" (click)="authService.googleLogin()">Sign in with google</button>
+  <button type="menu" (click)="authService.googleLogin(); anonymousLogin = false">Sign in with google</button>
   <br>
   <br>
   <button (click)="anonymousLogin = true" *ngIf="!anonymousLogin">Sign in as a guest</button>

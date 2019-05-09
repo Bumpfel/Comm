@@ -36,7 +36,7 @@ a:hover, .dropdown a {
 .right {
     margin-left: auto;
 }
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 550px) {
     .left {
         display: none;
     }
