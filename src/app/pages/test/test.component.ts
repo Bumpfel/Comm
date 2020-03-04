@@ -63,11 +63,14 @@ export class TestComponent implements OnInit {
   // ----------------------------- Drag & drop --------------------------------
 
   private draggedBox: HTMLElement
-  private originalContainer: HTMLElement
+  // private originalContainer: HTMLElement
+  private previewBox: HTMLElement
 
   startDrag(event) {
     this.draggedBox = event.target
-    this.originalContainer = event.target.parentElement
+    this.previewBox = event.target.cloneNode(true)
+    this.previewBox.classList.add('dropPreview')
+    // this.originalContainer = event.target.parentElement
   }
 
   previewDrop(event) {
@@ -78,24 +81,33 @@ export class TestComponent implements OnInit {
     }
 
     if(this.draggedBox.parentElement != dropTarget) {
-      dropTarget.appendChild(this.draggedBox)
-      this.draggedBox.classList.add('dropPreview')
+      dropTarget.appendChild(this.previewBox)
+      this.draggedBox.classList.add('gone')
       
       console.log('previewing drop')
+    } else {
+      this.draggedBox.classList.remove('gone')
     }
   }
 
   stopDropPreview(event) {
     if(event.target.classList.contains('dropContainer')) {
-      this.originalContainer.appendChild(this.draggedBox)
-      this.draggedBox.classList.remove('dropPreview')
+      this.previewBox.remove()
+      // this.originalContainer.appendChild(this.draggedBox)
+      this.draggedBox.classList.remove('gone')
 
       console.log('stopping preview')
     }
   }
   
   drop(event) {
-    this.draggedBox.classList.remove('dropPreview')
+    const newDropContainer = this.previewBox.parentElement
+    this.previewBox.remove()
+    if(newDropContainer) {
+      newDropContainer.appendChild(this.draggedBox)
+    }
+    this.draggedBox.classList.remove('gone')
+
     console.log('dropping')
   }
 
