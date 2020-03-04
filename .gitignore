@@ -2,6 +2,9 @@
 
 # my specifictions
 /bkup
+/db-backup
+*/private
+serviceAccountKey.json
 
 # compiled output
 /dist
@@ -45,8 +48,3 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-
-
-# db backup stuff #
-*/private
-serviceAccountKey.json

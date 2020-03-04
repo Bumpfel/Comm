@@ -76,3 +76,29 @@ img.slide-out-right {
     padding-right: 10px;
     right: 0;
 }
+
+.dropContainer {
+    display: flex;
+    border: 1px dotted grey;
+    min-height: 100px;
+}
+
+.card {
+    margin: 5px;
+    padding: 10px;
+    width: 100px;
+    height: 50px;
+    border: 1px solid black;
+    
+    cursor: pointer;
+    text-align: center;
+}
+
+.dropPreview {
+    border-style: dashed;
+    opacity: .6;
+}
+
+.gone {
+    display: none;
+}

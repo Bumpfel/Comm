@@ -2,6 +2,28 @@
   <title>Comm - Test page</title>
   <h3>Test stuff</h3>
 
+
+  
+  <!-- Drag and drop -->
+  <div class="testContainer">
+    <h4>Drag-boxes</h4>
+    
+    Dropbox 1
+    <div class="dropContainer" id="drop1" (dragover)="$event.preventDefault()" (dragenter)="previewDrop($event)" (dragleave)="stopDropPreview($event)" (dragend)="drop($event)">
+      <div draggable="true" id="box1" (dragstart)="startDrag($event)" class="card">Drag box #1</div>
+      <div draggable="true" id="box2" (dragstart)="startDrag($event)" class="card">Drag box #2</div>
+      <div draggable="true" id="box3" (dragstart)="startDrag($event)" class="card">Drag box #3</div>
+    </div>
+    
+    <br>
+
+    Dropbox 2
+    <div class="dropContainer" id="drop2" (dragover)="$event.preventDefault()" (dragenter)="previewDrop($event)" (dragleave)="stopDropPreview($event)" (dragend)="drop($event)">
+    </div>
+
+  </div>
+  
+
   <!-- Carousel -->
   <div class="testContainer">
     <h4>Image carousel</h4>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from '../../services/message.service';
 import { GlobalService, Timer } from '../../services/global.service';
+import { e } from '@angular/core/src/render3';
+import { eventNames } from 'cluster';
 
 @Component({
   selector: 'app-test',
@@ -57,8 +59,47 @@ export class TestComponent implements OnInit {
     }
 
   }
+  
+  // ----------------------------- Drag & drop --------------------------------
 
+  private draggedBox: HTMLElement
+  private originalContainer: HTMLElement
 
+  startDrag(event) {
+    this.draggedBox = event.target
+    this.originalContainer = event.target.parentElement
+  }
+
+  previewDrop(event) {
+    if(event.target.classList.contains('dropContainer')) {
+      var dropTarget = event.target
+    } else {
+      dropTarget = event.target.parentElement
+    }
+
+    if(this.draggedBox.parentElement != dropTarget) {
+      dropTarget.appendChild(this.draggedBox)
+      this.draggedBox.classList.add('dropPreview')
+      
+      console.log('previewing drop')
+    }
+  }
+
+  stopDropPreview(event) {
+    if(event.target.classList.contains('dropContainer')) {
+      this.originalContainer.appendChild(this.draggedBox)
+      this.draggedBox.classList.remove('dropPreview')
+
+      console.log('stopping preview')
+    }
+  }
+  
+  drop(event) {
+    this.draggedBox.classList.remove('dropPreview')
+    console.log('dropping')
+  }
+
+    
   // -------------------------------- Popup -----------------------------------
   showTestPopup(parentElement: HTMLElement) {
     this.testPopup = true;
