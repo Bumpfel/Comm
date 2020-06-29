@@ -5,6 +5,7 @@
 /db-backup
 */private
 serviceAccountKey.json
+*/src/environments
 
 # compiled output
 /dist

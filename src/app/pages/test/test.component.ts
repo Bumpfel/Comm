@@ -63,14 +63,12 @@ export class TestComponent implements OnInit {
   // ----------------------------- Drag & drop --------------------------------
 
   private draggedBox: HTMLElement
-  // private originalContainer: HTMLElement
   private previewBox: HTMLElement
 
   startDrag(event) {
     this.draggedBox = event.target
     this.previewBox = event.target.cloneNode(true)
     this.previewBox.classList.add('dropPreview')
-    // this.originalContainer = event.target.parentElement
   }
 
   previewDrop(event) {
@@ -79,11 +77,10 @@ export class TestComponent implements OnInit {
     } else {
       dropTarget = event.target.parentElement
     }
-
+    
     if(this.draggedBox.parentElement != dropTarget) {
       dropTarget.appendChild(this.previewBox)
       this.draggedBox.classList.add('gone')
-      
       console.log('previewing drop')
     } else {
       this.draggedBox.classList.remove('gone')
@@ -91,13 +88,12 @@ export class TestComponent implements OnInit {
   }
 
   stopDropPreview(event) {
-    if(event.target.classList.contains('dropContainer')) {
+    // TOOD blir fel här ett flimmer-problem uppstår när man äntrar en annan box eftersom då triggas dragleave
+    if(event.target.classList.contains('dropContainer')) { // && pekar inte på ett card) {
       this.previewBox.remove()
-      // this.originalContainer.appendChild(this.draggedBox)
       this.draggedBox.classList.remove('gone')
-
-      console.log('stopping preview')
     }
+    console.log('stop preview')
   }
   
   drop(event) {
