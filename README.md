@@ -1,4 +1,8 @@
 # Comm
+Comm is a hobby project with a couple of experimental features. The main developed feature is the "tasks" section which consists of a "categorizable" kanban board.
+
+# Deployed project
+https://comm-ca912.firebaseapp.com/
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.4.
 
